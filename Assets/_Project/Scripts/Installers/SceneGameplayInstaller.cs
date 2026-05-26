@@ -1,6 +1,5 @@
 using Project.Core.Input;
 using Project.Core.Settings;
-using Project.Player;
 using UnityEngine;
 using Zenject;
 

@@ -1,121 +1,96 @@
 using Project.Core.Input;
-using Project.Core.Settings;
 using UnityEngine;
 using Zenject;
 
-namespace Project.Player
+[RequireComponent(typeof(CharacterController))]
+public class PlayerView : MonoBehaviour
 {
-    // Этот компонент вешается на рут Player 
-    public class PlayerView : MonoBehaviour
+    [Header("References")]
+    [SerializeField] private CharacterController _characterController;
+    [SerializeField] private Transform _headTransform; // Пустышка для камеры
+
+    [Header("Movement")]
+    [SerializeField] private float _walkSpeed = 3f;
+    [SerializeField] private float _sprintSpeed = 5.5f;
+    [SerializeField] private float _gravity = -9.81f;
+
+    [Header("Look")]
+    [SerializeField] private float _mouseSensitivity = 15f;
+    [SerializeField] private float _maxLookAngle = 80f;
+
+    private IInputService _input;
+    private float _verticalVelocity;
+    private float _xRotation = 0f; // Угол наклона головы
+
+    [Inject]
+    public void Construct(IInputService input)
     {
-        [Header("Required References")]
-        // SerializeField используется для Zenject Binding 'FromComponent' или прямого drag-and-drop в эдиторе
-        [SerializeField] private CharacterController characterController;
-        [SerializeField] private Transform headTransform; // Объект "Head" для вращения по X (pitch)
+        _input = input;
+    }
 
-        // Зависимости, получаемые через Inject
-        private IInputService _inputService;
-        private PlayerSettings _settings;
+    private void Start()
+    {
+        // Лочим курсор, чтобы не улетал на второй монитор
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
 
-        // Локальные переменные состояния
-        private float _verticalRotation; // Текущий угол наклона головы
-        private Vector3 _velocity; // Вектор вертикальной скорости (гравитация)
+    private void Update()
+    {
+        HandleLook();
+        HandleMovement();
+    }
 
-        // Метод инжекции зависимостей (вызывается Zenject при старте сцены)
-        [Inject]
-        public void Construct(IInputService inputService, PlayerSettings settings)
+    private void HandleLook()
+    {
+        Vector2 lookInput = _input.LookInput * (_mouseSensitivity * Time.deltaTime);
+
+        // Вращаем голову вверх-вниз (ось X)
+        _xRotation -= lookInput.y;
+        _xRotation = Mathf.Clamp(_xRotation, -_maxLookAngle, _maxLookAngle);
+        _headTransform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
+
+        // Вращаем всё тело игрока влево-вправо (ось Y)
+        transform.Rotate(Vector3.up * lookInput.x);
+    }
+
+    private void HandleMovement()
+    {
+        // Читаем инпут
+        Vector2 moveInput = _input.MoveInput;
+        float currentSpeed = _input.IsSprinting ? _sprintSpeed : _walkSpeed;
+
+        // Переводим 2D инпут в 3D вектор направления относительно поворота игрока
+        Vector3 moveDirection = transform.right * moveInput.x + transform.forward * moveInput.y;
+
+        // Гравитация
+        if (_characterController.isGrounded && _verticalVelocity < 0)
         {
-            _inputService = inputService;
-            _settings = settings;
+            _verticalVelocity = -2f; // Прижимаем к полу, чтобы не прыгал на спусках
         }
+        _verticalVelocity += _gravity * Time.deltaTime;
 
-        private void Start()
-        {
-            // Валидация: Проверяем, что ссылки настроены корректно в эдиторе
-            ValidateReferences();
+        // Итоговый вектор
+        Vector3 finalMovement = moveDirection * currentSpeed;
+        finalMovement.y = _verticalVelocity;
 
-            // Настройка курсора
-            LockCursor();
-        }
+        // Двигаем
+        _characterController.Move(finalMovement * Time.deltaTime);
+    }
 
-        private void Update()
-        {
-            // Для соло-разработки Update допустим, но в идеале логику 
-            // движения выносят в ITickable через Zenject
-            HandleLookRotation();
-            HandleMovement();
-        }
+    public void Teleport(Vector3 position, Quaternion rotation)
+    {
+        // Вырубаем контроллер, иначе Юнити проигнорит смену позиции
+        _characterController.enabled = false;
 
-        private void ValidateReferences()
-        {
-            if (characterController == null)
-                Debug.LogError($"CharacterController not assigned on {gameObject.name} (PlayerView)", gameObject);
+        transform.position = position;
+        transform.rotation = rotation;
 
-            if (headTransform == null)
-                Debug.LogError($"Head Transform not assigned on {gameObject.name} (PlayerView)", gameObject);
-        }
+        // Сбрасываем наклон камеры, чтобы игрок не смотрел в пол после спавна
+        _xRotation = 0f;
+        _headTransform.localRotation = Quaternion.identity;
 
-        private void LockCursor()
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-
-        // --- Логика Вращения (Look) ---
-        private void HandleLookRotation()
-        {
-            Vector2 lookInput = _inputService.LookInput * _settings.mouseSensitivity;
-
-            // 1. Горизонтальное вращение: Вращаем КОРПУС (Player root) по оси Y
-            transform.Rotate(Vector3.up * lookInput.x);
-
-            // 2. Вертикальное вращение: Наклоняем ГОЛОВУ (Head) по оси X
-            _verticalRotation -= lookInput.y;
-
-            // Ограничиваем угол, чтобы игрок не видел свои пятки
-            _verticalRotation = Mathf.Clamp(_verticalRotation, -_settings.lowerLookLimit, _settings.upperLookLimit);
-
-            headTransform.localRotation = Quaternion.Euler(_verticalRotation, 0f, 0f);
-
-            // Cinemachine Brain на Main Camera автоматически привяжется к положению headTransform
-        }
-
-        // --- Логика Перемещения (Move) ---
-        private void HandleMovement()
-        {
-            Vector2 moveInput = _inputService.MoveInput;
-            bool isSprinting = _inputService.IsSprinting;
-
-            // Определяем текущую скорость из ScriptableObject настроек
-            float targetSpeed = isSprinting ? _settings.sprintSpeed : _settings.walkSpeed;
-
-            // Рассчитываем направление движения относительно ТЕКУЩЕГО поворота рута
-            Vector3 moveDirection = transform.right * moveInput.x + transform.forward * moveInput.y;
-
-            // Нормализуем, чтобы диагональное движение не было быстрее
-            if (moveDirection.sqrMagnitude > 1) moveDirection.Normalize();
-
-            // Обработка Гравитации
-            HandleGravity();
-
-            // Сборка финального вектора движения (Горизонталь + Вертикаль)
-            Vector3 finalMoveCommand = moveDirection * (targetSpeed * Time.deltaTime) + _velocity * Time.deltaTime;
-
-            // Передача команды CharacterController
-            characterController.Move(finalMoveCommand);
-        }
-
-        private void HandleGravity()
-        {
-            // Проверка заземления (CharacterController.isGrounded обновляется после Move())
-            if (characterController.isGrounded && _velocity.y < 0)
-            {
-                _velocity.y = -2f; // Прижимная сила, чтобы не прыгал на спусках
-                return;
-            }
-
-            // Применяем гравитацию
-            _velocity.y += _settings.gravity * Time.deltaTime;
-        }
+        // Врубаем обратно
+        _characterController.enabled = true;
     }
 }

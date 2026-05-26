@@ -1,40 +1,53 @@
 using System.Threading.Tasks;
 using UnityEngine;
 using Zenject;
+using System.Linq;
 
 public class LevelManager : IInitializable
 {
     private readonly SceneLoaderService _sceneLoader;
+    private readonly PlayerView _player;
     private string _currentLocation = string.Empty;
 
-    // Инжектим наш глобальный загрузчик сцен из 1 этапа
-    public LevelManager(SceneLoaderService sceneLoader)
+    // Добавили инжект PlayerView, чтобы LevelManager мог его двигать
+    public LevelManager(SceneLoaderService sceneLoader, PlayerView player)
     {
         _sceneLoader = sceneLoader;
+        _player = player;
     }
 
-    // Вызовется автоматически, когда GameplayCore загрузится
     public async void Initialize()
     {
         Debug.Log("[LevelManager] Ядро загружено. Грузим первую локацию...");
 
-        // Позже здесь ты будешь читать сохраненки и понимать, какой день грузить.
-        // Сейчас жестко грузим первый день магазина.
-        await LoadLocation("Store_Day1");
+        // Для теста грузим магазин и спавним у главной двери
+        await LoadLocation("Store_Day1", SpawnLocationId.StoreMainDoor);
     }
 
-    public async Task LoadLocation(string locationName)
+    public async Task LoadLocation(string locationName, SpawnLocationId spawnId)
     {
-        // Выгружаем старую локацию, если она была (например, игрок ушел из дома в магазин)
         if (!string.IsNullOrEmpty(_currentLocation))
         {
             await _sceneLoader.UnloadLocationAsync(_currentLocation);
         }
 
-        // Грузим новую поверх ядра
+        // Грузим новую сцену
         await _sceneLoader.LoadLocationAdditivelyAsync(locationName);
         _currentLocation = locationName;
 
-        Debug.Log($"[LevelManager] Локация {locationName} успешно загружена и пришита к Ядру.");
+        // После загрузки сцены ищем точку спавна
+        var spawnPoints = Object.FindObjectsByType<SpawnPoint>();
+        var targetSpawn = spawnPoints.FirstOrDefault(p => p.LocationId == spawnId);
+
+        if (targetSpawn != null)
+        {
+            _player.Teleport(targetSpawn.Position, targetSpawn.Rotation);
+            Debug.Log($"[LevelManager] Игрок телепортирован на {spawnId}");
+        }
+        else
+        {
+            // Если забыл расставить точки - игрок просто останется где был
+            Debug.LogError($"[LevelManager] Точка спавна {spawnId} не найдена в сцене {locationName}!");
+        }
     }
 }

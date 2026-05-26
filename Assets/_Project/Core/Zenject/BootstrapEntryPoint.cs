@@ -21,11 +21,11 @@ public class BootstrapEntryPoint : MonoBehaviour
 
         // Допустим, мы решаем запустить Главное меню
         Debug.Log("[Bootstrap] Загрузка Главного Меню...");
-        await _sceneLoader.LoadCoreSceneAsync("MainMenu");
+        //await _sceneLoader.LoadCoreSceneAsync("MainMenu");
 
         // Либо, если грузим игру:
-        // await _sceneLoader.LoadCoreSceneAsync("GameplayCore");
-        // await _sceneLoader.LoadLocationAdditivelyAsync("Store_Day1");
+        await _sceneLoader.LoadCoreSceneAsync("GameplayCore");
+        await _sceneLoader.LoadLocationAdditivelyAsync("Store_Day1");
     }
 }
 
