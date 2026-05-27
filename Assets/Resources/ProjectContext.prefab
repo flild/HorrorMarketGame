@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3258735531283650327}
   - component: {fileID: 9126395434768521407}
-  - component: {fileID: 101780799988584153}
+  - component: {fileID: 724019560887492488}
   m_Layer: 0
-  m_Name: GlobalProjectContext
+  m_Name: ProjectContext
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,7 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Zenject::Zenject.ProjectContext
   _scriptableObjectInstallers: []
-  _monoInstallers: []
+  _monoInstallers:
+  - {fileID: 724019560887492488}
   _installerPrefabs: []
   _parentNewObjectsUnderContext: 1
   _editorReflectionBakingCoverageMode: 0
@@ -61,7 +62,7 @@ MonoBehaviour:
       _missingHandlerDefaultResponse: 2
       _requireStrictUnsubscribe: 0
       _defaultAsyncTickPriority: 1
---- !u!114 &101780799988584153
+--- !u!114 &724019560887492488
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

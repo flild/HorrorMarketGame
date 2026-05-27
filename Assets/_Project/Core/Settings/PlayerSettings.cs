@@ -10,7 +10,7 @@ namespace Project.Core.Settings
         [Header("Movement")]
         [Min(0)] public float walkSpeed = 5f;
         [Min(0)] public float sprintSpeed = 8f;
-        [Min(0)] public float gravity = -9.81f;
+        public float gravity = -9.81f;
         [Min(0)] public float stepInterval = 0.5f; // Для будущих шагов
 
         [Header("Look")]

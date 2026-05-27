@@ -12,10 +12,15 @@ namespace Project.Core.Input
         public Vector2 LookInput => _input.Player.Look.ReadValue<Vector2>();
         public bool IsSprinting => _input.Player.Sprint.IsPressed();
 
+        // Читаем триггер для прыжка (срабатывает 1 раз за нажатие)
+        public bool IsJumping => _input.Player.Jump.triggered;
+        // Читаем удержание для приседа
+        public bool IsCrouching => _input.Player.Crouch.IsPressed();
+
         public StandaloneInputService()
         {
             _input = new GameInput();
-            Enable(); // По умолчанию включаем
+            Enable();
         }
 
         public void Enable() => _input.Player.Enable();
@@ -25,7 +30,6 @@ namespace Project.Core.Input
         {
             Disable();
             _input.Dispose();
-
         }
     }
 }

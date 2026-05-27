@@ -10,12 +10,12 @@ public class CoreInstaller : MonoInstaller
     public override void InstallBindings()
     {
         // Биндим игрока. Теперь кто угодно сможет его запросить через [Inject]
-        // Container.Bind<PlayerController>().FromInstance(playerInstance).AsSingle();
+        Container.Bind<PlayerView>().FromComponentInHierarchy().AsSingle();
         Container.BindInterfacesTo<StandaloneInputService>().AsSingle();
         // Тут же потом забиндишь UI, инвентарь и т.д.
         // Container.Bind<UIManager>().FromComponentInHierarchy().AsSingle();
 
         // Биндим менеджер уровней, который будет рулить загрузкой локаций
-        //Container.BindInterfacesAndSelfTo<LevelManager>().AsSingle();
+        Container.BindInterfacesAndSelfTo<LevelManager>().AsSingle();
     }
 }
