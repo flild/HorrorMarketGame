@@ -16,7 +16,7 @@ namespace Project.Core.Input
         public bool IsJumping => _input.Player.Jump.triggered;
         // Читаем удержание для приседа
         public bool IsCrouching => _input.Player.Crouch.IsPressed();
-
+        public bool IsInteracting => _input.Player.Interact.triggered;
         public StandaloneInputService()
         {
             _input = new GameInput();

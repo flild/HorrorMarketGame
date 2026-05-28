@@ -8,6 +8,7 @@ namespace Project.Core.Input
         bool IsSprinting { get; }
         bool IsJumping { get; }
         bool IsCrouching { get; }
+        bool IsInteracting { get; }
 
         void Enable();
         void Disable();

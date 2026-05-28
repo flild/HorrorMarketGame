@@ -24,7 +24,6 @@ public class BootstrapEntryPoint : MonoBehaviour
 
         // Либо, если грузим игру:
         await _sceneLoader.LoadCoreSceneAsync("GameplayCore");
-        await _sceneLoader.LoadLocationAdditivelyAsync("Store_Day1");
     }
 }
 
