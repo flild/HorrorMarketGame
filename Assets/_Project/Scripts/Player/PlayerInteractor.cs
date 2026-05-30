@@ -8,14 +8,16 @@ public class PlayerInteractor : MonoBehaviour
     [SerializeField] private Transform _cameraTransform;
     [SerializeField] private float _interactionDistance = 2.5f;
     [SerializeField] private LayerMask _interactableLayerMask;
+    private SignalBus _signalBus;
 
     private IInputService _input;
     private IInteractable _currentInteractable;
 
     [Inject]
-    public void Construct(IInputService input)
+    public void Construct(IInputService input, SignalBus signalBus)
     {
         _input = input;
+        _signalBus = signalBus;
     }
 
     private void Update()
@@ -40,6 +42,7 @@ public class PlayerInteractor : MonoBehaviour
                     ClearFocus();
                     _currentInteractable = interactable;
                     _currentInteractable.OnFocus();
+                    _signalBus.Fire(new InteractableFocusSignal { IsFocused = true, PromptText = "Взять ключи [E]" });
                 }
                 return;
             }
@@ -63,6 +66,7 @@ public class PlayerInteractor : MonoBehaviour
         {
             _currentInteractable.OnLoseFocus();
             _currentInteractable = null;
+            _signalBus.Fire(new InteractableFocusSignal { IsFocused = false });
         }
     }
 }

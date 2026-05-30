@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 namespace Project.Core.Input
 {
@@ -10,6 +11,9 @@ namespace Project.Core.Input
         bool IsCrouching { get; }
         bool IsInteracting { get; }
 
+        void SetUIMode(bool isUIActive);
+
+        event Action OnPauseTriggered;
         void Enable();
         void Disable();
     }

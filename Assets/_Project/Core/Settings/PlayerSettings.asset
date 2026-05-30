@@ -16,6 +16,6 @@ MonoBehaviour:
   sprintSpeed: 15
   gravity: -15
   stepInterval: 0.5
-  mouseSensitivity: 0.7
+  mouseSensitivity: 0.3
   upperLookLimit: 80
   lowerLookLimit: 80

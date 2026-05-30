@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Project.Core.Input
 {
@@ -17,17 +18,48 @@ namespace Project.Core.Input
         // Читаем удержание для приседа
         public bool IsCrouching => _input.Player.Crouch.IsPressed();
         public bool IsInteracting => _input.Player.Interact.triggered;
+
+        public event Action OnPauseTriggered;
+
         public StandaloneInputService()
         {
             _input = new GameInput();
+            _input.Player.TogglePause.performed += HandlePauseInput;
+            _input.UI.TogglePause.performed += HandlePauseInput;
+
             Enable();
         }
+        public void SetUIMode(bool isUIActive)
+        {
+            if (isUIActive)
+            {
+                // Отрубаем управление персонажем, врубаем управление UI
+                _input.Player.Disable();
+                _input.UI.Enable();
+            }
+            else
+            {
+                // Наоборот
+                _input.UI.Disable();
+                _input.Player.Enable();
+            }
+        }
+
+        private void HandlePauseInput(InputAction.CallbackContext context)
+        {
+            OnPauseTriggered?.Invoke();
+        }
+
 
         public void Enable() => _input.Player.Enable();
         public void Disable() => _input.Player.Disable();
 
+
         public void Dispose()
         {
+            _input.Player.TogglePause.performed -= HandlePauseInput;
+            _input.UI.TogglePause.performed -= HandlePauseInput;
+
             Disable();
             _input.Dispose();
         }
