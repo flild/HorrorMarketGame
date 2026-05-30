@@ -3,6 +3,8 @@ using UnityEngine;
 public interface IInteractable
 {
 
+    string InteractionPrompt { get; }
+
     // Вызывается, когда игрок навел прицел
     void OnFocus();
 

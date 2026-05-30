@@ -23,6 +23,7 @@ public class HUDWindow : WindowBase
 
     public void HideInteractionPrompt()
     {
+        _interactionPromptText.text = "";
         _fadeTween?.Kill();
         _fadeTween = _promptCanvasGroup.DOFade(0f, 0.2f);
     }

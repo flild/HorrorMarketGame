@@ -8,12 +8,15 @@ public class InteractableObject : MonoBehaviour, IInteractable
     [Tooltip("Сюда можно вешать логику прямо из инспектора (например, дернуть аниматор двери)")]
     public UnityEvent OnInteractEvent;
 
+    [Header("UI")]
+    [SerializeField] protected string _promptText = "Взаимодействовать [E]";
     // Слои для шейдера обводки
     private const int DefaultLayer = 0;
     private const int OutlineLayer = 9;
 
     private bool _isForceHighlighted = false;
 
+    public virtual string InteractionPrompt => _promptText;
     // Делаем методы virtual, чтобы ты мог отнаследоваться от этого класса, 
     // если понадобится сложная логика (например, класс DraggableBox : InteractableObject)
     public virtual void OnFocus()

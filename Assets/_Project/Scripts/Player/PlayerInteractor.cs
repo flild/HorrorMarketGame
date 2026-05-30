@@ -20,17 +20,14 @@ public class PlayerInteractor : MonoBehaviour
         _signalBus = signalBus;
     }
 
-    private void Update()
+    private void Start()
     {
-        HandleRaycast();
-        HandleInput();
+        // Подписываемся на кнопку взаимодействия
+        _input.OnInteractTriggered += HandleInteractInput;
     }
 
     private void HandleRaycast()
     {
-        // ДЕБАГ: Рисуем красный луч в окне Scene. В самой игре (Game) его не видно.
-        Debug.DrawRay(_cameraTransform.position, _cameraTransform.forward * _interactionDistance, Color.red);
-
         if (Physics.Raycast(_cameraTransform.position, _cameraTransform.forward, out RaycastHit hit, _interactionDistance, _interactableLayerMask))
         {
             var interactable = hit.collider.GetComponentInParent<IInteractable>();
@@ -42,7 +39,7 @@ public class PlayerInteractor : MonoBehaviour
                     ClearFocus();
                     _currentInteractable = interactable;
                     _currentInteractable.OnFocus();
-                    _signalBus.Fire(new InteractableFocusSignal { IsFocused = true, PromptText = "Взять ключи [E]" });
+                    _signalBus.Fire(new InteractableFocusSignal { IsFocused = true, PromptText = _currentInteractable.InteractionPrompt });
                 }
                 return;
             }
@@ -51,15 +48,16 @@ public class PlayerInteractor : MonoBehaviour
         ClearFocus();
     }
 
-    private void HandleInput()
+
+    private void HandleInteractInput()
     {
-        // Если мы на что-то смотрим и кнопка нажата в этот кадр
-        if (_currentInteractable != null && _input.IsInteracting)
+        Debug.Log("interact input triggered");
+        // Ивент выстрелил. Если мы смотрим на предмет — дергаем его логику.
+        if (_currentInteractable != null)
         {
             _currentInteractable.Interact();
         }
     }
-
     private void ClearFocus()
     {
         if (_currentInteractable != null)
@@ -69,4 +67,18 @@ public class PlayerInteractor : MonoBehaviour
             _signalBus.Fire(new InteractableFocusSignal { IsFocused = false });
         }
     }
+    private void OnDestroy()
+    {
+        if (_input != null)
+        {
+            _input.OnInteractTriggered -= HandleInteractInput;
+        }
+    }
+
+    private void Update()
+    {
+        // В апдейте остается ТОЛЬКО рейкаст
+        HandleRaycast();
+    }
+
 }

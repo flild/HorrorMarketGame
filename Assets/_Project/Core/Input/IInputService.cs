@@ -9,11 +9,12 @@ namespace Project.Core.Input
         bool IsSprinting { get; }
         bool IsJumping { get; }
         bool IsCrouching { get; }
-        bool IsInteracting { get; }
 
         void SetUIMode(bool isUIActive);
 
         event Action OnPauseTriggered;
+        event Action OnDropTriggered;
+        event Action OnInteractTriggered;
         void Enable();
         void Disable();
     }

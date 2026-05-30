@@ -17,15 +17,19 @@ namespace Project.Core.Input
         public bool IsJumping => _input.Player.Jump.triggered;
         // Читаем удержание для приседа
         public bool IsCrouching => _input.Player.Crouch.IsPressed();
-        public bool IsInteracting => _input.Player.Interact.triggered;
 
         public event Action OnPauseTriggered;
+        public event Action OnDropTriggered;
+        public event Action OnInteractTriggered;
+
 
         public StandaloneInputService()
         {
             _input = new GameInput();
             _input.Player.TogglePause.performed += HandlePauseInput;
             _input.UI.TogglePause.performed += HandlePauseInput;
+            _input.Player.Drop.performed += _ => OnDropTriggered?.Invoke();
+            _input.Player.Interact.performed += _ => OnInteractTriggered?.Invoke();
 
             Enable();
         }
@@ -59,6 +63,8 @@ namespace Project.Core.Input
         {
             _input.Player.TogglePause.performed -= HandlePauseInput;
             _input.UI.TogglePause.performed -= HandlePauseInput;
+            _input.Player.Drop.performed -= _ => OnDropTriggered?.Invoke();
+            _input.Player.Interact.performed -= _ => OnInteractTriggered?.Invoke();
 
             Disable();
             _input.Dispose();
