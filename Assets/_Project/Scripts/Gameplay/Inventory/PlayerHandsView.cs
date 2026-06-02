@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets._Project.Scripts.Gameplay.Inventory.Data;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -47,11 +48,15 @@ namespace Assets._Project.Scripts.Gameplay.Inventory
             switch (signal.NewItem.Type)
             {
                 case ItemType.Equippable:
-                    // Для инструментов (швабра, сканер) спавним префаб из SO
-                    if (signal.NewItem.ViewPrefab != null)
+                    // Проверяем, действительно ли это ToolItemDefinition
+                    if (signal.NewItem is ToolItemDefinition toolItem)
                     {
-                        _spawnedToolInstance = Instantiate(signal.NewItem.ViewPrefab, _holdPoint);
-                        ResetTransform(_spawnedToolInstance.transform);
+                        if (toolItem.ViewPrefab != null)
+                        {
+                            _spawnedToolInstance = Instantiate(toolItem.ViewPrefab, _holdPoint);
+                            ResetTransform(_spawnedToolInstance.transform);
+                            Debug.Log($"[HandsView] Заспавнил инструмент: {_spawnedToolInstance.name}");
+                        }
                     }
                     break;
 

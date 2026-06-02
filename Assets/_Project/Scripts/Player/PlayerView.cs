@@ -67,9 +67,9 @@ public class PlayerView : MonoBehaviour
 
             if (_input.IsJumping)
             {
-                // Захардкодил высоту прыжка в 1.5, потому что в твоем конфиге ее пока нет.
-                // Захочешь — добавь public float jumpHeight = 1.5f; в PlayerSettings.
-                _verticalVelocity = Mathf.Sqrt(1.5f * -2f * _settings.gravity);
+                // Захардкодил высоту прыжка в 1, потому что в твоем конфиге ее пока нет.
+                // Захочешь — добавь public float jumpHeight = 1f; в PlayerSettings.
+                _verticalVelocity = Mathf.Sqrt(1f * -2f * _settings.gravity);
             }
         }
 
