@@ -20,7 +20,8 @@ namespace Project.Core.Input
 
         public event Action OnPauseTriggered;
         public event Action OnDropTriggered;
-        public event Action OnInteractTriggered;
+        event Action OnInteractStarted;
+        event Action OnInteractCanceled;
 
 
         public StandaloneInputService()
@@ -29,7 +30,8 @@ namespace Project.Core.Input
             _input.Player.TogglePause.performed += HandlePauseInput;
             _input.UI.TogglePause.performed += HandlePauseInput;
             _input.Player.Drop.performed += _ => OnDropTriggered?.Invoke();
-            _input.Player.Interact.performed += _ => OnInteractTriggered?.Invoke();
+            _input.Player.Interact.started += _ => OnInteractStarted?.Invoke();
+            _input.Player.Interact.canceled += _ => OnInteractCanceled?.Invoke();
 
             Enable();
         }
@@ -64,7 +66,9 @@ namespace Project.Core.Input
             _input.Player.TogglePause.performed -= HandlePauseInput;
             _input.UI.TogglePause.performed -= HandlePauseInput;
             _input.Player.Drop.performed -= _ => OnDropTriggered?.Invoke();
-            _input.Player.Interact.performed -= _ => OnInteractTriggered?.Invoke();
+
+            _input.Player.Interact.started -= _ => OnInteractStarted?.Invoke();
+            _input.Player.Interact.canceled -= _ => OnInteractCanceled?.Invoke();
 
             Disable();
             _input.Dispose();

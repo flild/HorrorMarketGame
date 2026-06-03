@@ -11,7 +11,8 @@ public class PlayerInteractor : MonoBehaviour
     private SignalBus _signalBus;
 
     private IInputService _input;
-    private IInteractable _currentInteractable;
+    private IInteractable _currentInteractable; // То, на что мы смотрим
+    private IInteractable _interactingObject;// То, что мы сейчас "зажали/держим"
 
     [Inject]
     public void Construct(IInputService input, SignalBus signalBus)
@@ -22,8 +23,8 @@ public class PlayerInteractor : MonoBehaviour
 
     private void Start()
     {
-        // Подписываемся на кнопку взаимодействия
-        _input.OnInteractTriggered += HandleInteractInput;
+        _input.OnInteractStarted += HandleInteractStart;
+        _input.OnInteractCanceled += HandleInteractEnd;
     }
 
     private void HandleRaycast()
@@ -49,19 +50,33 @@ public class PlayerInteractor : MonoBehaviour
     }
 
 
-    private void HandleInteractInput()
+    private void HandleInteractStart()
     {
-        Debug.Log("interact input triggered");
-        // Ивент выстрелил. Если мы смотрим на предмет — дергаем его логику.
         if (_currentInteractable != null)
         {
-            _currentInteractable.Interact();
+            _interactingObject = _currentInteractable;
+            _interactingObject.Interact();
+        }
+    }
+
+    private void HandleInteractEnd()
+    {
+        if (_interactingObject != null)
+        {
+            _interactingObject.EndInteract();
+            _interactingObject = null;
         }
     }
     private void ClearFocus()
     {
         if (_currentInteractable != null)
         {
+            // Жестко прерываем взаимодействие, если отвернулись в процессе "зажатия"
+            if (_interactingObject == _currentInteractable)
+            {
+                HandleInteractEnd();
+            }
+
             _currentInteractable.OnLoseFocus();
             _currentInteractable = null;
             _signalBus.Fire(new InteractableFocusSignal { IsFocused = false });
@@ -71,7 +86,8 @@ public class PlayerInteractor : MonoBehaviour
     {
         if (_input != null)
         {
-            _input.OnInteractTriggered -= HandleInteractInput;
+            _input.OnInteractStarted -= HandleInteractStart;
+            _input.OnInteractCanceled -= HandleInteractEnd;
         }
     }
 

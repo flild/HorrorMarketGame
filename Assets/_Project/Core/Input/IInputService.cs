@@ -14,7 +14,8 @@ namespace Project.Core.Input
 
         event Action OnPauseTriggered;
         event Action OnDropTriggered;
-        event Action OnInteractTriggered;
+        event Action OnInteractStarted; 
+        event Action OnInteractCanceled; 
         void Enable();
         void Disable();
     }

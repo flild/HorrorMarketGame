@@ -51,4 +51,10 @@ public class InteractableObject : MonoBehaviour, IInteractable
             child.gameObject.layer = targetLayer;
         }
     }
+
+    // Добавляем пустую виртуальную реализацию, 
+    // чтобы обычным предметам (ключам) не нужно было это переопределять.
+    public virtual void EndInteract()
+    {
+    }
 }
