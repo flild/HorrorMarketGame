@@ -20,8 +20,8 @@ namespace Project.Core.Input
 
         public event Action OnPauseTriggered;
         public event Action OnDropTriggered;
-        event Action OnInteractStarted;
-        event Action OnInteractCanceled;
+        public event Action OnInteractStarted;
+        public event Action OnInteractCanceled;
 
 
         public StandaloneInputService()

@@ -1,4 +1,5 @@
-﻿using Assets._Project.Scripts.Gameplay.Inventory.Data;
+﻿using Assets._Project.Scripts.Gameplay.Interactables;
+using Assets._Project.Scripts.Gameplay.Inventory.Data;
 using Assets._Project.Scripts.Gameplay.Inventory.Interfaces;
 using Cysharp.Threading.Tasks;
 using System;
