@@ -4,43 +4,83 @@ namespace Assets._Project.Scripts.Gameplay.Interactables
 {
     public class BoxStateController : MonoBehaviour
     {
-        [Header("Meshes")]
-        [SerializeField] private GameObject _closedMesh;
-        [SerializeField] private GameObject _openMesh;
+        [Header("Animation")]
+        [SerializeField] private Animator _animator;
+        private static readonly int IsOpenHash = Animator.StringToHash("IsOpen");
 
         [Header("Fill Visuals (Fake Items)")]
-        [Tooltip("Quad или плоскость с нарисованными крышками банок")]
         [SerializeField] private Transform _fillVisualTransform;
+        [SerializeField] private float _fullLocalY = 0.1f;
+        [SerializeField] private float _emptyLocalY = -0.15f;
 
-        [Tooltip("Локальная высота Y, когда коробка заполнена на 100%")]
-        [SerializeField] private float _fullLocalY = 0.5f;
+        [Header("Capacity")]
+        [field: SerializeField] public int MaxItemsCapacity { get; set; } = 10;
+        [field: SerializeField] public int CurrentItemsCount { get; private set; } = 10;
 
-        [Tooltip("Локальная высота Y, когда в коробке остался минимум (около дна)")]
-        [SerializeField] private float _emptyLocalY = 0.05f;
-
-        // Текущее количество товаров в этой конкретной коробке
-        public int CurrentItemsCount { get; set; }
+        [Header("Debug in Editor")]
+        [Range(0, 10)]
+        [SerializeField] private int _debugCurrentItems = 10;
 
         private void Start()
         {
-            // По дефолту коробка закрыта
+            SetOpenState(false);
+            UpdateVisualsInternally();
+        }
+
+        private void OnValidate()
+        {
+            CurrentItemsCount = Mathf.Clamp(_debugCurrentItems, 0, MaxItemsCapacity);
+            UpdateVisualsInternally();
+        }
+
+        // Вызывается извне, когда игрок начинает распаковку
+        public void BeginUnpack()
+        {
+            if (CurrentItemsCount > 0)
+            {
+                SetOpenState(true);
+            }
+        }
+
+        // Вызывается извне, когда игрок отпускает кнопку или процесс прерван
+        public void EndUnpack()
+        {
             SetOpenState(false);
         }
 
-        public void SetOpenState(bool isOpen)
+        // Вызывается полкой, чтобы забрать один предмет. 
+        // Коробка сама решает, отдавать его или нет, и сама обновляет свой визуал.
+        public bool TryExtractItem()
         {
-            if (_closedMesh != null) _closedMesh.SetActive(!isOpen);
-            if (_openMesh != null) _openMesh.SetActive(isOpen);
+            if (CurrentItemsCount <= 0) return false;
+
+            CurrentItemsCount--;
+            UpdateVisualsInternally();
+
+            // Если вытащили последнее - захлопываемся
+            if (CurrentItemsCount <= 0)
+            {
+                SetOpenState(false);
+            }
+
+            return true;
         }
 
-        public void UpdateFillVisuals(float percentage)
+        private void SetOpenState(bool isOpen)
+        {
+            if (_animator != null)
+            {
+                _animator.SetBool(IsOpenHash, isOpen);
+            }
+        }
+
+        private void UpdateVisualsInternally()
         {
             if (_fillVisualTransform == null) return;
 
-            // Защита от кривых значений (жестко ограничиваем от 0 до 1)
+            float percentage = MaxItemsCapacity > 0 ? (float)CurrentItemsCount / MaxItemsCapacity : 0f;
             percentage = Mathf.Clamp01(percentage);
 
-            // Если коробка пустая — прячем фейковое дно к чертям, чтобы не отсвечивало
             if (percentage <= 0f)
             {
                 _fillVisualTransform.gameObject.SetActive(false);
@@ -49,15 +89,10 @@ namespace Assets._Project.Scripts.Gameplay.Interactables
             else
             {
                 if (!_fillVisualTransform.gameObject.activeSelf)
-                {
                     _fillVisualTransform.gameObject.SetActive(true);
-                }
             }
 
-            // Высчитываем новую высоту через линейную интерполяцию (Lerp)
             float newY = Mathf.Lerp(_emptyLocalY, _fullLocalY, percentage);
-
-            // Применяем позицию, не трогая оригинальные X и Z
             Vector3 currentLocalPos = _fillVisualTransform.localPosition;
             _fillVisualTransform.localPosition = new Vector3(currentLocalPos.x, newY, currentLocalPos.z);
         }
