@@ -26,6 +26,7 @@ public class CoreInstaller : MonoInstaller
         Container.DeclareSignal<ItemAddedSignal>();
         Container.DeclareSignal<ItemRemovedSignal>();
         Container.DeclareSignal<EquipmentChangedSignal>();
+        Container.DeclareSignal<ToolActionSignal>();
         // --------------------------------
 
         // UI Окна (Должны лежать на Canvas в GameplayCore)

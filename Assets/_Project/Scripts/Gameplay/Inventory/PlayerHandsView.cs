@@ -15,11 +15,13 @@ namespace Assets._Project.Scripts.Gameplay.Inventory
         private SignalBus _signalBus;
         private GameObject _spawnedToolInstance;
         private Transform _previousCarryableParent;
+        private DiContainer _container;
 
         [Inject]
-        public void Construct(SignalBus signalBus)
+        public void Construct(SignalBus signalBus, DiContainer container) // <-- ДОБАВИЛ
         {
             _signalBus = signalBus;
+            _container = container;
         }
 
         private void Start()
@@ -53,7 +55,7 @@ namespace Assets._Project.Scripts.Gameplay.Inventory
                     {
                         if (toolItem.ViewPrefab != null)
                         {
-                            _spawnedToolInstance = Instantiate(toolItem.ViewPrefab, _holdPoint);
+                            _spawnedToolInstance = _container.InstantiatePrefab(toolItem.ViewPrefab, _holdPoint);
                             ResetTransform(_spawnedToolInstance.transform);
                             Debug.Log($"[HandsView] Заспавнил инструмент: {_spawnedToolInstance.name}");
                         }

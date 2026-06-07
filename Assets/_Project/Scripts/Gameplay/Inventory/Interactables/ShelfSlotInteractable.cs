@@ -37,7 +37,28 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
         private void Awake()
         {
             _collider = GetComponent<BoxCollider>();
+            AlignHighlightVisual(); // Жестко ставим на место при старте
             if (_highlightVisual != null) _highlightVisual.SetActive(false);
+        }
+
+        private void OnValidate()
+        {
+            if (_collider == null) _collider = GetComponent<BoxCollider>();
+            AlignHighlightVisual(); // Чтобы подсветка сама прыгала на дно прямо в редакторе
+        }
+
+        private void AlignHighlightVisual()
+        {
+            if (_highlightVisual == null || _collider == null) return;
+
+            // Считаем локальную позицию: центр по X и Z, и самое дно по Y
+            Vector3 bottomLocalPos = new Vector3(
+                _collider.center.x,
+                _collider.center.y - (_collider.size.y / 2f),
+                _collider.center.z
+            );
+
+            _highlightVisual.transform.localPosition = bottomLocalPos;
         }
 
         protected override void EnableOutline(bool enable)
@@ -102,7 +123,6 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
                 _unpackCts = null;
             }
 
-            // На всякий случай жестко говорим коробке закрыться, если игрок отпустил кнопку
             if (_equipment.CurrentInstance != null)
             {
                 var boxState = _equipment.CurrentInstance.GetComponent<BoxStateController>();
@@ -113,13 +133,12 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
         private async UniTaskVoid UnpackRoutine(BoxItemDefinition boxDef, BoxStateController boxState, CancellationToken token)
         {
             _isUnpacking = true;
-            boxState.BeginUnpack(); // Полка просто говорит "начинаю брать", остальное коробка делает сама
+            boxState.BeginUnpack();
 
             try
             {
                 for (int i = _currentItemsPlaced; i < MaxCapacity; i++)
                 {
-                    // Просим коробку отдать предмет. Если отдала - спавним на полке.
                     if (!boxState.TryExtractItem())
                         break;
 
@@ -139,8 +158,6 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
         private void PlaceSingleItem()
         {
             SpawnProductModel(_allowedProduct);
-
-            // Забираем товар из рук (очищаем руки)
             _equipment.Unequip();
         }
 
@@ -149,7 +166,6 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
             Vector3 spawnPos = GetPositionForIndex(_currentItemsPlaced);
             var itemInstance = Instantiate(productDef.ShelfPrefab, spawnPos, transform.rotation, transform);
 
-            // Чистим физику, чтобы товары не разлетались на полке
             if (itemInstance.TryGetComponent<Rigidbody>(out var rb)) Destroy(rb);
             if (itemInstance.TryGetComponent<Collider>(out var col)) Destroy(col);
 
@@ -172,9 +188,11 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
 
             float startX = center.x - (size.x / 2f) + (stepX / 2f);
             float startZ = center.z - (size.z / 2f) + (stepZ / 2f);
-            float bottomY = center.y - (size.y / 2f);
 
-            Vector3 localPos = new Vector3(startX + (col * stepX), bottomY, startZ + (row * stepZ));
+            // Вот здесь теперь просто берем центр коллайдера по высоте
+            float centerY = center.y;
+
+            Vector3 localPos = new Vector3(startX + (col * stepX), centerY, startZ + (row * stepZ));
             return transform.TransformPoint(localPos);
         }
 

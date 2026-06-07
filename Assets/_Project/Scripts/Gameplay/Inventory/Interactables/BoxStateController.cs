@@ -20,6 +20,7 @@ namespace Assets._Project.Scripts.Gameplay.Interactables
         [Header("Debug in Editor")]
         [Range(0, 10)]
         [SerializeField] private int _debugCurrentItems = 10;
+        
 
         private void Start()
         {
@@ -36,7 +37,7 @@ namespace Assets._Project.Scripts.Gameplay.Interactables
         // Вызывается извне, когда игрок начинает распаковку
         public void BeginUnpack()
         {
-            if (CurrentItemsCount > 0)
+            if (CurrentItemsCount <= MaxItemsCapacity)
             {
                 SetOpenState(true);
             }
@@ -45,7 +46,6 @@ namespace Assets._Project.Scripts.Gameplay.Interactables
         // Вызывается извне, когда игрок отпускает кнопку или процесс прерван
         public void EndUnpack()
         {
-            SetOpenState(false);
         }
 
         // Вызывается полкой, чтобы забрать один предмет. 

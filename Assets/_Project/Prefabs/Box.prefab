@@ -293,7 +293,7 @@ Transform:
   m_GameObject: {fileID: 4686108783758780484}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071067, z: -0.7071068, w: 0}
-  m_LocalPosition: {x: 0, y: -0.10125001, z: 0}
+  m_LocalPosition: {x: 0, y: 0.1, z: 0}
   m_LocalScale: {x: 0.45, y: 0.34999996, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -666,13 +666,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8100384935255537953}
   serializedVersion: 2
-  m_LocalRotation: {x: 1, y: 0.00000004073918, z: 0.00000004909407, w: 0.00000019470718}
+  m_LocalRotation: {x: 1, y: 0, z: 0, w: 0}
   m_LocalPosition: {x: -0, y: 0.1753, z: 0.1524}
   m_LocalScale: {x: 1, y: 0.9999999, z: 0.9999999}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5778508258736891599}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 180, y: 0, z: 0}
 --- !u!1 &8352382460103083552
 GameObject:
   m_ObjectHideFlags: 0
@@ -887,8 +887,9 @@ MonoBehaviour:
   _fillVisualTransform: {fileID: 3532299875215712253}
   _fullLocalY: 0.1
   _emptyLocalY: -0.15
+  <MaxItemsCapacity>k__BackingField: 10
   <CurrentItemsCount>k__BackingField: 10
-  _debugFillPercentage: 0.195
+  _debugCurrentItems: 10
 --- !u!95 &7531923249039391194
 Animator:
   serializedVersion: 7
