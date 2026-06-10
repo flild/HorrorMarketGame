@@ -21,6 +21,7 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Mop
         [SerializeField] private float _floorOffset = 0.1f;
 
         private SignalBus _signalBus;
+        private string _myToolId; // Сюда будем сохранять ID из SO
         private static readonly int IsScrubbingHash = Animator.StringToHash("IsScrubbing");
 
         [Inject]
@@ -33,6 +34,10 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Mop
         {
             _signalBus.Subscribe<ToolActionSignal>(OnToolAction);
         }
+        public void Initialize(string toolId)
+        {
+            _myToolId = toolId;
+        }
 
         private void OnDestroy()
         {
@@ -41,8 +46,8 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Mop
 
         private void OnToolAction(ToolActionSignal signal)
         {
-            // Убеждаемся, что сигнал именно для швабры (ID должен совпадать с тем, что в SO)
-            if (signal.ToolId == "mop" && _animator != null)
+            // Теперь префаб реагирует только на свой динамический ID
+            if (signal.ToolId == _myToolId && _animator != null)
             {
                 _animator.SetBool(IsScrubbingHash, signal.IsActive);
             }

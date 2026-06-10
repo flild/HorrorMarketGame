@@ -1,10 +1,9 @@
 ﻿using Assets._Project.Scripts.Gameplay.Inventory.Interfaces;
 using Cysharp.Threading.Tasks;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using Zenject;
 
 namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
@@ -12,19 +11,24 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
     public class StainInteractable : InteractableObject, IInteractable
     {
         [Header("Stain Settings")]
-        [Tooltip("ID швабры, чтобы пятно нельзя было отмыть коробкой")]
-        [SerializeField] private string _mopId = "mop";
-        [SerializeField] private float _washTime = 3f; // За сколько секунд отмывается
+        [SerializeField] private float _washTime = 3f;
 
         [Header("Visuals")]
-        [SerializeField] private MeshRenderer _renderer;
+        [SerializeField] private DecalProjector _decalProjector;
 
         private IEquipmentService _equipment;
         private SignalBus _signalBus;
         private CancellationTokenSource _washCts;
+
         private bool _isWashing;
+        private string _activeToolId; // Кешируем ID, чтобы корректно остановить анимацию
+
         private Material _materialInstance;
+        private bool _isMaterialInstanced;
         private float _currentWashProgress = 0f;
+
+        private static readonly int CleanAmountProp = Shader.PropertyToID("_CleanAmount");
+        private static readonly int RandomSeedProp = Shader.PropertyToID("_RandomSeed");
 
         [Inject]
         public void Construct(IEquipmentService equipment, SignalBus signalBus)
@@ -33,20 +37,15 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
             _signalBus = signalBus;
         }
 
-        private void Awake()
-        {
-            // Создаем уникальный инстанс материала, чтобы не отмыть все пятна на уровне разом
-            if (_renderer != null) _materialInstance = _renderer.material;
-        }
-
         public override string InteractionPrompt
         {
             get
             {
-                if (_equipment.CurrentItem != null && _equipment.CurrentItem.Id == _mopId)
+                // Проверяем capability через интерфейс
+                if (_equipment.CurrentItem is ICleaningTool)
                     return "Отмыть пятно [Зажать E]";
 
-                return "Грязное пятно (Нужна швабра)";
+                return "Грязное пятно (Нужен инструмент для уборки)";
             }
         }
 
@@ -54,8 +53,11 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
         {
             if (_isWashing) return;
 
-            if (_equipment.CurrentItem != null && _equipment.CurrentItem.Id == _mopId)
+            if (_equipment.CurrentItem is ICleaningTool)
             {
+                // Запоминаем ID инструмента, которым начали мыть
+                _activeToolId = _equipment.CurrentItem.Id;
+
                 _washCts = new CancellationTokenSource();
                 WashRoutine(_washCts.Token).Forget();
             }
@@ -75,8 +77,17 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
         {
             _isWashing = true;
 
-            // Кричим швабре: "Начинай махать!"
-            _signalBus.Fire(new ToolActionSignal { ToolId = _mopId, IsActive = true });
+            if (!_isMaterialInstanced && _decalProjector != null)
+            {
+                _materialInstance = new Material(_decalProjector.material);
+                _decalProjector.material = _materialInstance;
+
+                _materialInstance.SetVector(RandomSeedProp, new Vector2(UnityEngine.Random.Range(0f, 100f), UnityEngine.Random.Range(0f, 100f)));
+
+                _isMaterialInstanced = true;
+            }
+
+            _signalBus.Fire(new ToolActionSignal { ToolId = _activeToolId, IsActive = true });
 
             try
             {
@@ -84,18 +95,20 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
                 {
                     _currentWashProgress += Time.deltaTime / _washTime;
 
-                    // Понижаем альфу материала (исчезновение)
-                    if (_materialInstance != null)
+                    if (_isMaterialInstanced)
                     {
-                        Color c = _materialInstance.color;
-                        c.a = Mathf.Lerp(1f, 0f, _currentWashProgress);
-                        _materialInstance.color = c;
+                        float cleanVal = Mathf.Lerp(0f, 1.05f, _currentWashProgress);
+                        _materialInstance.SetFloat(CleanAmountProp, cleanVal);
                     }
 
                     await UniTask.Yield(PlayerLoopTiming.Update, token);
                 }
 
-                // Пятно отмыто на 100%
+                if (_isMaterialInstanced && _materialInstance != null)
+                {
+                    Destroy(_materialInstance);
+                }
+
                 Destroy(gameObject);
             }
             catch (OperationCanceledException)
@@ -105,8 +118,16 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
             finally
             {
                 _isWashing = false;
-                // Кричим швабре: "Стоп!"
-                _signalBus.Fire(new ToolActionSignal { ToolId = _mopId, IsActive = false });
+                _signalBus.Fire(new ToolActionSignal { ToolId = _activeToolId, IsActive = false });
+                _activeToolId = null;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (_isMaterialInstanced && _materialInstance != null)
+            {
+                Destroy(_materialInstance);
             }
         }
     }

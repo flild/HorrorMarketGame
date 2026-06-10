@@ -1,4 +1,5 @@
 ﻿using Assets._Project.Scripts.Gameplay.Inventory.Data;
+using Assets._Project.Scripts.Gameplay.Inventory.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -50,14 +51,20 @@ namespace Assets._Project.Scripts.Gameplay.Inventory
             switch (signal.NewItem.Type)
             {
                 case ItemType.Equippable:
-                    // Проверяем, действительно ли это ToolItemDefinition
                     if (signal.NewItem is ToolItemDefinition toolItem)
                     {
                         if (toolItem.ViewPrefab != null)
                         {
                             _spawnedToolInstance = _container.InstantiatePrefab(toolItem.ViewPrefab, _holdPoint);
                             ResetTransform(_spawnedToolInstance.transform);
-                            Debug.Log($"[HandsView] Заспавнил инструмент: {_spawnedToolInstance.name}");
+
+                            // Универсальная инициализация. Никакого хардкода под швабру!
+                            if (_spawnedToolInstance.TryGetComponent<IToolVisual>(out var toolVisual))
+                            {
+                                toolVisual.Initialize(toolItem.Id);
+                            }
+
+                            Debug.Log($"[HandsView] Заспавнил инструмент: {_spawnedToolInstance.name} с ID: {toolItem.Id}");
                         }
                     }
                     break;
