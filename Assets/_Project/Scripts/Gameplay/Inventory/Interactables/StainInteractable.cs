@@ -25,7 +25,7 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
 
         private Material _materialInstance;
         private bool _isMaterialInstanced;
-        private float _currentWashProgress = 0f;
+        private float _currentWashProgress = 0.2f;
 
         private static readonly int CleanAmountProp = Shader.PropertyToID("_CleanAmount");
         private static readonly int RandomSeedProp = Shader.PropertyToID("_RandomSeed");
@@ -82,7 +82,8 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
                 _materialInstance = new Material(_decalProjector.material);
                 _decalProjector.material = _materialInstance;
 
-                _materialInstance.SetVector(RandomSeedProp, new Vector2(UnityEngine.Random.Range(0f, 100f), UnityEngine.Random.Range(0f, 100f)));
+                // изменять при создании пятна на уровне
+               // _materialInstance.SetVector(RandomSeedProp, new Vector2(UnityEngine.Random.Range(0f, 100f), UnityEngine.Random.Range(0f, 100f)));
 
                 _isMaterialInstanced = true;
             }
@@ -91,7 +92,7 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
 
             try
             {
-                while (_currentWashProgress < 1f)
+                while (_currentWashProgress < 0.9f)
                 {
                     _currentWashProgress += Time.deltaTime / _washTime;
 

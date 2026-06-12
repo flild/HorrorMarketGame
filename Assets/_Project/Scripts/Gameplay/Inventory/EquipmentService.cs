@@ -89,21 +89,14 @@ namespace Assets._Project.Scripts.Gameplay.Inventory
 
         private void TogglePhysics(GameObject obj, bool enable)
         {
-            if (obj.TryGetComponent<Rigidbody>(out var rb))
+            // Теперь сервис просто просит сам предмет изменить свое состояние
+            if (obj.TryGetComponent<ItemPhysicsController>(out var physics))
             {
-                rb.isKinematic = !enable;
-                rb.detectCollisions = enable;
+                physics.SetPhysicsState(enable);
             }
-
-            // Отключаем коллайдеры, чтобы объект в руках не триггерил рейкасты и коллизии
-            var colliders = obj.GetComponentsInChildren<Collider>();
-            foreach (var col in colliders)
+            else
             {
-                // Если это триггер взаимодействия, его можно не трогать, но основные отключаем
-                if (!col.isTrigger)
-                {
-                    col.enabled = enable;
-                }
+                Debug.LogWarning($"[Equipment] На объекте {obj.name} нет ItemPhysicsController! Физика не отключена.");
             }
         }
     }

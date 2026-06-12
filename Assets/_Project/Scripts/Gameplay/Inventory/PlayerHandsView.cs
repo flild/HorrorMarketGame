@@ -58,7 +58,12 @@ namespace Assets._Project.Scripts.Gameplay.Inventory
                             _spawnedToolInstance = _container.InstantiatePrefab(toolItem.ViewPrefab, _holdPoint);
                             ResetTransform(_spawnedToolInstance.transform);
 
-                            // Универсальная инициализация. Никакого хардкода под швабру!
+                            // ОТКЛЮЧАЕМ ФИЗИКУ У ИНСТРУМЕНТА СРАЗУ ПОСЛЕ СПАВНА
+                            if (_spawnedToolInstance.TryGetComponent<ItemPhysicsController>(out var physics))
+                            {
+                                physics.SetPhysicsState(false);
+                            }
+
                             if (_spawnedToolInstance.TryGetComponent<IToolVisual>(out var toolVisual))
                             {
                                 toolVisual.Initialize(toolItem.Id);
