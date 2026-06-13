@@ -12,6 +12,7 @@ namespace Assets._Project.Scripts.Gameplay.Inventory
     {
         [Header("Holding Settings")]
         [SerializeField] private Transform _holdPoint;
+        [SerializeField] private Transform _toolPoint;
 
         private SignalBus _signalBus;
         private GameObject _spawnedToolInstance;
@@ -51,26 +52,17 @@ namespace Assets._Project.Scripts.Gameplay.Inventory
             switch (signal.NewItem.Type)
             {
                 case ItemType.Equippable:
-                    if (signal.NewItem is ToolItemDefinition toolItem)
+                    if (signal.NewItem is ToolItemDefinition toolItem && toolItem.ViewPrefab != null)
                     {
-                        if (toolItem.ViewPrefab != null)
-                        {
-                            _spawnedToolInstance = _container.InstantiatePrefab(toolItem.ViewPrefab, _holdPoint);
-                            ResetTransform(_spawnedToolInstance.transform);
+                        // Спавним не в HoldPoint, а в ToolPoint!
+                        _spawnedToolInstance = _container.InstantiatePrefab(toolItem.ViewPrefab, _toolPoint);
+                        ResetTransform(_spawnedToolInstance.transform);
 
-                            // ОТКЛЮЧАЕМ ФИЗИКУ У ИНСТРУМЕНТА СРАЗУ ПОСЛЕ СПАВНА
-                            if (_spawnedToolInstance.TryGetComponent<ItemPhysicsController>(out var physics))
-                            {
-                                physics.SetPhysicsState(false);
-                            }
+                        if (_spawnedToolInstance.TryGetComponent<ItemPhysicsController>(out var physics))
+                            physics.SetPhysicsState(false);
 
-                            if (_spawnedToolInstance.TryGetComponent<IToolVisual>(out var toolVisual))
-                            {
-                                toolVisual.Initialize(toolItem.Id);
-                            }
-
-                            Debug.Log($"[HandsView] Заспавнил инструмент: {_spawnedToolInstance.name} с ID: {toolItem.Id}");
-                        }
+                        if (_spawnedToolInstance.TryGetComponent<IToolVisual>(out var toolVisual))
+                            toolVisual.Initialize(toolItem.Id);
                     }
                     break;
 

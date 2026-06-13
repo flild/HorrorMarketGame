@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Scripts.Gameplay.Inventory.Data.CleaningToolDefinition
   <Id>k__BackingField: free_mop
   <DisplayName>k__BackingField: "\u0428\u0432\u0430\u0431\u0440\u0430"
-  <Type>k__BackingField: 2
+  <Type>k__BackingField: 1
   <ViewPrefab>k__BackingField: {fileID: 9010695701151974909, guid: 98099a1f2a9ecab469ee68f69456073e, type: 3}
   <WorldPrefab>k__BackingField: {fileID: 9010695701151974909, guid: 98099a1f2a9ecab469ee68f69456073e, type: 3}
   <WashSpeedMultiplier>k__BackingField: 1

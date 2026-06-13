@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets._Project.Scripts.Gameplay.Inventory.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -6,7 +7,7 @@ using Zenject;
 
 namespace Assets._Project.Scripts.Gameplay.Inventory.Mop
 {
-    public class MopVisualController : MonoBehaviour
+    public class MopVisualController : MonoBehaviour, IToolVisual
     {
         [Header("References")]
         [SerializeField] private Animator _animator;
