@@ -15,7 +15,7 @@ namespace Assets._Project.Scripts.Gameplay.Inventory
             if (_rb != null)
             {
                 _rb.isKinematic = !enable;
-                _rb.detectCollisions = enable;
+                //_rb.detectCollisions = enable;
             }
 
             foreach (var col in _colliders)

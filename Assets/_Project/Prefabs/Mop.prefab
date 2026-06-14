@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6830958743886539714}
   - component: {fileID: 8839626571207565361}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Handle_Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -51,8 +51,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.049999997, y: 1.2163581, z: 0.05}
-  m_Center: {x: -0.065, y: 0.3540635, z: 0}
+  m_Size: {x: 0.050000004, y: 1.2113439, z: 0.05}
+  m_Center: {x: -0.06499998, y: 0.35657048, z: 0.00000018972584}
 --- !u!1 &1436751661488991367
 GameObject:
   m_ObjectHideFlags: 0
@@ -62,7 +62,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1546927352211818875}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: mop_root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9115178372464356435}
   - component: {fileID: 3156855609977122494}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Brush_Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -134,7 +134,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.30108577, y: 0.07015574, z: 0.07084535}
   m_Center: {x: -0.06, y: -0.29, z: 0.0047699204}
@@ -147,7 +147,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7097959145373977698}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Visual_Offset
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -179,7 +179,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2585439269832388863}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Colliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -215,7 +215,7 @@ GameObject:
   - component: {fileID: 6166117802572681610}
   - component: {fileID: 3120904557981085150}
   - component: {fileID: 4797344734671817863}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: "\u0428\u0412\u0410\u0411\u0420\u0410"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -327,9 +327,10 @@ GameObject:
   - component: {fileID: 6262003927076846597}
   - component: {fileID: 6285360686094334723}
   - component: {fileID: -4677322196719510075}
-  - component: {fileID: 1753980693979686995}
   - component: {fileID: 5474485640539404717}
-  m_Layer: 0
+  - component: {fileID: 8687395812253466997}
+  - component: {fileID: 5869261999022227749}
+  m_Layer: 7
   m_Name: Mop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -372,7 +373,7 @@ MonoBehaviour:
     m_Bits: 1
   _mopLength: 1
   _floorOffset: 0.01
-  _rootRb: {fileID: 1753980693979686995}
+  _rootRb: {fileID: 8687395812253466997}
 --- !u!114 &-4677322196719510075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -391,7 +392,22 @@ MonoBehaviour:
   _promptText: "\u0412\u0437\u0430\u0438\u043C\u043E\u0434\u0435\u0439\u0441\u0442\u0432\u043E\u0432\u0430\u0442\u044C
     [E]"
   _itemData: {fileID: 11400000, guid: 210e410d23d833949a22c6c8f0c767b3, type: 2}
---- !u!54 &1753980693979686995
+--- !u!114 &5474485640539404717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9010695701151974909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe5db30e255f1144ab3ef410abbd8d32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Scripts.Gameplay.Inventory.ItemPhysicsController
+  _rb: {fileID: 8687395812253466997}
+  _colliders:
+  - {fileID: 8839626571207565361}
+--- !u!54 &8687395812253466997
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -410,7 +426,7 @@ Rigidbody:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
@@ -418,7 +434,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5474485640539404717
+--- !u!114 &5869261999022227749
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -427,10 +443,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 9010695701151974909}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe5db30e255f1144ab3ef410abbd8d32, type: 3}
+  m_Script: {fileID: 11500000, guid: 4039d7a1d45f426448ca8f55fe234328, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Scripts.Gameplay.Inventory.ItemPhysicsController
-  _rb: {fileID: 1753980693979686995}
-  _colliders:
-  - {fileID: 8839626571207565361}
-  - {fileID: 3156855609977122494}
+  m_EditorClassIdentifier: Assembly-CSharp::PhysicsSnitch

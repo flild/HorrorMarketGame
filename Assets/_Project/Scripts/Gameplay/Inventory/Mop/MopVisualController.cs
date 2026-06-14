@@ -61,8 +61,6 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Mop
             // ФИКС: Если физика включена (швабра валяется), вырубаем логику анти-клипа
             if (_rootRb != null && !_rootRb.isKinematic)
             {
-                // Опционально: плавно возвращаем сетку в центр, чтобы она не застыла криво
-                _mopRoot.localPosition = Vector3.Lerp(_mopRoot.localPosition, Vector3.zero, Time.deltaTime * 10f);
                 return;
             }
 

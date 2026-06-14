@@ -1,4 +1,7 @@
 using Assets._Project.Scripts.Gameplay.Inventory;
+using Assets._Project.Scripts.Gameplay.Phone;
+using Assets._Project.Scripts.Gameplay.Phone.UI;
+using Assets._Project.Scripts.Gameplay.Time;
 using Project.Core.Input;
 using UnityEngine;
 using Zenject;
@@ -21,6 +24,7 @@ public class CoreInstaller : MonoInstaller
         // --- СИСТЕМА ИНВЕНТАРЯ И РУК ---
         Container.BindInterfacesTo<InventoryService>().AsSingle();
         Container.BindInterfacesTo<EquipmentService>().AsSingle();
+        Container.BindInterfacesTo<ShiftTimeService>().AsSingle();
 
         // Декларация сигналов инвентаря
         Container.DeclareSignal<ItemAddedSignal>();
@@ -45,5 +49,21 @@ public class CoreInstaller : MonoInstaller
 
         // Менеджер уровней
         Container.BindInterfacesAndSelfTo<LevelManager>().AsSingle();
+
+
+        //Time
+        Container.DeclareSignal<TimeTickSignal>();
+        Container.DeclareSignal<ShiftPhaseChangedSignal>();
+
+
+        // Сигналы телефона
+        Container.DeclareSignal<PhoneTasksUpdatedSignal>();
+        Container.DeclareSignal<PhoneMessageReceivedSignal>();
+
+        // Сервисы
+        Container.BindInterfacesTo<PhoneService>().AsSingle();
+
+        // Презентер телефона (Window уже есть в твоем коде)
+        Container.BindInterfacesAndSelfTo<PhonePresenter>().AsSingle();
     }
 }

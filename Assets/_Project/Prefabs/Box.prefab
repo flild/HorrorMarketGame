@@ -276,7 +276,6 @@ GameObject:
   - component: {fileID: 3532299875215712253}
   - component: {fileID: 311092155881039340}
   - component: {fileID: 8659671082131501176}
-  - component: {fileID: 8048584542716728480}
   m_Layer: 0
   m_Name: Quad
   m_TagString: Untagged
@@ -356,28 +355,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &8048584542716728480
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4686108783758780484}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &4942989160874539826
 GameObject:
   m_ObjectHideFlags: 0
@@ -780,6 +757,7 @@ GameObject:
   - component: {fileID: 1546564047337885427}
   - component: {fileID: 1279520020991982726}
   - component: {fileID: 7531923249039391194}
+  - component: {fileID: 4030953327669266567}
   m_Layer: 0
   m_Name: Box
   m_TagString: Untagged
@@ -912,3 +890,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &4030953327669266567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9156711456004860319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe5db30e255f1144ab3ef410abbd8d32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Scripts.Gameplay.Inventory.ItemPhysicsController
+  _rb: {fileID: 1546564047337885427}
+  _colliders:
+  - {fileID: 6411474375085490588}
