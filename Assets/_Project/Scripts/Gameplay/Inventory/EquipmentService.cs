@@ -22,36 +22,25 @@ namespace Assets._Project.Scripts.Gameplay.Inventory
 
         public void Equip(ItemDefinition item, GameObject worldObject = null)
         {
-            Debug.Log($"[Equipment] Попытка экипировать предмет: {item?.DisplayName ?? "null"}");
             if (item == null) return;
 
-            // Если руки уже заняты, сначала сбрасываем старый предмет
+            // Теперь мы ЖЕСТКО требуем, чтобы при поднятии предмета передавался инстанс со сцены
+            if (worldObject == null)
+            {
+                Debug.LogError($"[Equipment] Попытка взять предмет '{item.DisplayName}' без указания физического объекта со сцены!");
+                return;
+            }
+
             if (IsHandsBusy)
             {
                 Unequip();
             }
 
             CurrentItem = item;
+            CurrentInstance = worldObject; // Сохраняем реальную швабру/коробку
 
-            if (item.Type == ItemType.Carryable)
-            {
-                if (worldObject == null)
-                {
-                    Debug.LogError($"[Equipment] Попытка взять Carryable предмет '{item.DisplayName}' без указания физического объекта со сцены!");
-                    return;
-                }
-
-                CurrentInstance = worldObject;
-                // Отключаем физику, чтобы объект не улетел и не толкал игрока
-                TogglePhysics(CurrentInstance, false);
-            }
-            else if (item.Type == ItemType.Equippable)
-            {
-                // Для инструментов (швабра) логика инстанцирования ложится на HandsView,
-                // либо мы можем подготовить инстанс здесь, если у нас есть пул.
-                // Пока просто фиксируем, что нам нужен префаб.
-                CurrentInstance = null;
-            }
+            // Вырубаем физику (через наш новый ItemPhysicsController)
+            TogglePhysics(CurrentInstance, false);
 
             Debug.Log($"[Equipment] Взяли в руки: {item.DisplayName}");
 
@@ -68,23 +57,31 @@ namespace Assets._Project.Scripts.Gameplay.Inventory
 
             Debug.Log($"[Equipment] Освободили руки от: {CurrentItem.DisplayName}");
 
-            if (CurrentItem.Type == ItemType.Carryable && CurrentInstance != null)
-            {
-                // Возвращаем физику объекту, который выкинули
-                TogglePhysics(CurrentInstance, true);
-
-                // Небольшой пинок вперед, чтобы коробка не падала строго под ноги
-                // (Реализуем позже через HandsView или прямо тут, если добавим ссылку на трансформ игрока)
-            }
+            // Запоминаем объект, так как сейчас мы обнулим ссылки
+            var instanceToDrop = CurrentInstance;
 
             CurrentItem = null;
             CurrentInstance = null;
 
+            // 1. Посылаем сигнал. PlayerHandsView моментально отработает его 
+            // и ОТВЯЖЕТ швабру от иерархии игрока (вызовет SetParent).
             _signalBus.Fire(new EquipmentChangedSignal
             {
                 NewItem = null,
                 EquippedInstance = null
             });
+
+            // 2. Только ТЕПЕРЬ, когда швабра свободна, возвращаем ей коллайдеры и гравитацию.
+            if (instanceToDrop != null)
+            {
+                TogglePhysics(instanceToDrop, true);
+
+                // 3. Даем пинок вперед, используя вектор взгляда главной камеры
+                if (instanceToDrop.TryGetComponent<Rigidbody>(out var rb))
+                {
+                    rb.AddForce(Camera.main.transform.forward * 3f, ForceMode.VelocityChange);
+                }
+            }
         }
 
         private void TogglePhysics(GameObject obj, bool enable)

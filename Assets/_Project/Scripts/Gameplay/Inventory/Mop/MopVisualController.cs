@@ -21,6 +21,8 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Mop
         [Tooltip("Отступ от пола, чтобы щетка не утопала в текстурах")]
         [SerializeField] private float _floorOffset = 0.1f;
 
+        [SerializeField]
+        private Rigidbody _rootRb;
         private SignalBus _signalBus;
         private string _myToolId; // Сюда будем сохранять ID из SO
         private static readonly int IsScrubbingHash = Animator.StringToHash("IsScrubbing");
@@ -56,18 +58,22 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Mop
 
         private void LateUpdate()
         {
-            // Делаем анти-клип. 
-            // Пускаем луч из точки HoldPoint вперед по направлению взгляда камеры.
+            // ФИКС: Если физика включена (швабра валяется), вырубаем логику анти-клипа
+            if (_rootRb != null && !_rootRb.isKinematic)
+            {
+                // Опционально: плавно возвращаем сетку в центр, чтобы она не застыла криво
+                _mopRoot.localPosition = Vector3.Lerp(_mopRoot.localPosition, Vector3.zero, Time.deltaTime * 10f);
+                return;
+            }
+
+            // Твой старый код анти-клипа:
             if (Physics.Raycast(transform.parent.position, transform.parent.forward, out RaycastHit hit, _mopLength, _obstacleLayer))
             {
-                // Если луч врезался в пол ближе, чем длина швабры, мы сдвигаем саму модельку (_mopRoot) назад к игроку.
-                // Таким образом, щетка всегда будет скользить ровно по поверхности пола.
                 float overlap = _mopLength - hit.distance;
                 _mopRoot.localPosition = new Vector3(0, 0, -(overlap - _floorOffset));
             }
             else
             {
-                // Если смотрим в воздух, возвращаем швабру в дефолтное положение
                 _mopRoot.localPosition = Vector3.Lerp(_mopRoot.localPosition, Vector3.zero, Time.deltaTime * 10f);
             }
         }

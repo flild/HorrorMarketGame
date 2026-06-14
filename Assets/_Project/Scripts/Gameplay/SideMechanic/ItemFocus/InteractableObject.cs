@@ -44,10 +44,11 @@ public class InteractableObject : MonoBehaviour, IInteractable
     {
         int targetLayer = enable ? OutlineLayer : DefaultLayer;
 
-        gameObject.layer = targetLayer;
-        foreach (Transform child in transform)
+        Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
+
+        foreach (var rnd in renderers)
         {
-            child.gameObject.layer = targetLayer;
+            rnd.gameObject.layer = targetLayer;
         }
     }
 

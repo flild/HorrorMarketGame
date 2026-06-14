@@ -63,7 +63,12 @@ public class PlayerInteractor : MonoBehaviour
     {
         if (_interactingObject != null)
         {
-            _interactingObject.EndInteract();
+            // Проверяем на жизнь и здесь, так как игрок может держать "E", 
+            // пока объект уничтожается скриптом.
+            if (_interactingObject as Object != null)
+            {
+                _interactingObject.EndInteract();
+            }
             _interactingObject = null;
         }
     }
@@ -71,14 +76,23 @@ public class PlayerInteractor : MonoBehaviour
     {
         if (_currentInteractable != null)
         {
+            // Кастуем к Object, чтобы Unity правильно проверила, жив ли нативный объект
+            bool isAlive = _currentInteractable as Object != null;
+
             // Жестко прерываем взаимодействие, если отвернулись в процессе "зажатия"
             if (_interactingObject == _currentInteractable)
             {
                 HandleInteractEnd();
             }
 
-            _currentInteractable.OnLoseFocus();
+            if (isAlive)
+            {
+                _currentInteractable.OnLoseFocus();
+            }
+
             _currentInteractable = null;
+
+            // Теперь код гарантированно доходит сюда, и плашка UI пропадает
             _signalBus.Fire(new InteractableFocusSignal { IsFocused = false });
         }
     }
