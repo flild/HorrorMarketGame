@@ -1,4 +1,5 @@
 ﻿using Assets._Project.Scripts.Gameplay.Inventory.Interfaces;
+using Assets._Project.Scripts.Gameplay.Phone;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
@@ -12,6 +13,9 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
     {
         [Header("Stain Settings")]
         [SerializeField] private float _washTime = 3f;
+
+        [Tooltip("ID действия, которое полетит в трекер квестов (например: 'wash_stain')")]
+        [SerializeField] private string _actionId = "wash_stain";
 
         [Header("Visuals")]
         [SerializeField] private DecalProjector _decalProjector;
@@ -76,6 +80,7 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
         private async UniTaskVoid WashRoutine(CancellationToken token)
         {
             _isWashing = true;
+            bool completedSuccessfully = false;
 
             if (!_isMaterialInstanced && _decalProjector != null)
             {
@@ -105,11 +110,13 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
                     await UniTask.Yield(PlayerLoopTiming.Update, token);
                 }
 
+                completedSuccessfully = true;
+
                 if (_isMaterialInstanced && _materialInstance != null)
                 {
                     Destroy(_materialInstance);
                 }
-
+                
                 Destroy(gameObject);
             }
             catch (OperationCanceledException)
@@ -121,6 +128,16 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
                 _isWashing = false;
                 _signalBus.Fire(new ToolActionSignal { ToolId = _activeToolId, IsActive = false });
                 _activeToolId = null;
+
+                // КИДАЕМ СИГНАЛ В ТРЕКЕР, если процесс не был прерван
+                if (completedSuccessfully)
+                {
+                    _signalBus.Fire(new PlayerActionSignal
+                    {
+                        ActionId = _actionId,
+                        Amount = 1
+                    });
+                }
             }
         }
 

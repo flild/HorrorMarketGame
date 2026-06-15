@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using Zenject;
 
-namespace Assets._Project.Scripts.Gameplay.Time
+namespace Assets._Project.Scripts.Gameplay.GameTime
 {
     public class ShiftTimeService : ITimeService, ITickable
     {

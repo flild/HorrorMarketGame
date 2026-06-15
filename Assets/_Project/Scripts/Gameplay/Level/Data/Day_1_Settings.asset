@@ -17,5 +17,11 @@ MonoBehaviour:
   _realSecondsPerGameHour: 300
   _overtimePayRatePerMinute: 10
   _faintPenalty: 500
-  _availableTasks: []
+  _availableTasks:
+  - Task: {fileID: 11400000, guid: fb5b538c92c0fae41b30aa1dfcbe2cc2, type: 2}
+    SpawnWeight: 10
+    MaxQuotaPerShift: 5
+  - Task: {fileID: 11400000, guid: f7aee20599ea6e64db00349bf326cbb9, type: 2}
+    SpawnWeight: 10
+    MaxQuotaPerShift: 5
   _paranoiaMultiplier: 1

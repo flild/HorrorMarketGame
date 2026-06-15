@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 399f59ef94595fe4c884083793e5466e, type: 3}
   m_Name: Task_CheckTags
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Scripts.Gameplay.Tasks.Data.TaskDefinition
-  <Id>k__BackingField: 
-  <DisplayName>k__BackingField: 
-  <PhoneDescription>k__BackingField: 
+  <Id>k__BackingField: Task_CheckTags
+  <DisplayName>k__BackingField: "\u041F\u0440\u043E\u0432\u0435\u0440\u0438\u0442\u044C
+    \u0446\u0435\u043D\u043D\u0438\u043A\u0438"
+  <PhoneDescription>k__BackingField: "\u043F\u0435\u0440\u0435\u0431\u0438\u0442\u044C
+    \u0446\u0435\u043D\u043D\u0438\u043A\u0438 "
   <TimeRewardMinutes>k__BackingField: 30

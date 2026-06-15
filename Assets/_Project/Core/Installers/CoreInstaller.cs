@@ -1,7 +1,8 @@
+using Assets._Project.Scripts.Gameplay.GameTime;
 using Assets._Project.Scripts.Gameplay.Inventory;
 using Assets._Project.Scripts.Gameplay.Phone;
 using Assets._Project.Scripts.Gameplay.Phone.UI;
-using Assets._Project.Scripts.Gameplay.Time;
+using Assets._Project.Scripts.Gameplay.Tasks;
 using Project.Core.Input;
 using UnityEngine;
 using Zenject;
@@ -65,5 +66,11 @@ public class CoreInstaller : MonoInstaller
 
         // Презентер телефона (Window уже есть в твоем коде)
         Container.BindInterfacesAndSelfTo<PhonePresenter>().AsSingle();
+
+        // Декларируем новый сигнал
+        Container.DeclareSignal<PlayerActionSignal>();
+
+        // Биндим QuestTracker (он IInitializable/IDisposable, так что используем Interfaces)
+        Container.BindInterfacesTo<QuestTracker>().AsSingle();
     }
 }

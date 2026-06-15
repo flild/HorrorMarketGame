@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 399f59ef94595fe4c884083793e5466e, type: 3}
   m_Name: Task_WashFloor
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Scripts.Gameplay.Tasks.Data.TaskDefinition
-  <Id>k__BackingField: 
-  <DisplayName>k__BackingField: 
-  <PhoneDescription>k__BackingField: 
+  <Id>k__BackingField: Task_WashFloor
+  <DisplayName>k__BackingField: "\u041E\u0442\u043C\u044B\u0442\u044C \u043F\u044F\u0442\u0435\u043D"
+  <PhoneDescription>k__BackingField: "\u0412 \u043C\u0430\u0433\u0430\u0437\u0438\u043D\u0435
+    \u0413\u0420\u042F\u0417\u041D\u041E!"
   <TimeRewardMinutes>k__BackingField: 30

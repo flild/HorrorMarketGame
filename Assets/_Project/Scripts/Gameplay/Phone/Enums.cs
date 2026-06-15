@@ -16,11 +16,13 @@ namespace Assets._Project.Scripts.Gameplay.Phone
     {
         public TaskDefinition Definition { get; }
         public NightTaskState State { get; set; }
+        public int CurrentProgress { get; set; } // Добавили поле
 
         public PhoneTaskData(TaskDefinition definition)
         {
             Definition = definition;
             State = NightTaskState.Active;
+            CurrentProgress = 0;
         }
     }
 
@@ -32,5 +34,10 @@ namespace Assets._Project.Scripts.Gameplay.Phone
     {
         public string Sender;
         public string Text;
+    }
+    public struct PlayerActionSignal
+    {
+        public string ActionId;
+        public int Amount; // Обычно 1, но вдруг ты добавишь уборку разом 5 банок
     }
 }

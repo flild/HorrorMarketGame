@@ -1,6 +1,5 @@
 using UnityEngine;
 using NaughtyAttributes;
-using UnityEngine;
 
 namespace Project.Core.Settings
 {

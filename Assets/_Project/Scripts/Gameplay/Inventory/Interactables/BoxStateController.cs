@@ -74,7 +74,7 @@ namespace Assets._Project.Scripts.Gameplay.Interactables
             }
         }
 
-        private void UpdateVisualsInternally()
+        private void UpdateVisualsInternally() 
         {
             if (_fillVisualTransform == null) return;
 
