@@ -1,0 +1,5 @@
+Key,RU,EN
+ui_prompt_wash,Отмыть пятно {0},Wash stain {0}
+task_wash_name,Уборка зала,Cleaning the hall
+task_wash_desc,Возьми швабру и отмой грязь.,Grab a mop and clean the dirt
+ui_prompt_empty,Пустое место ({0}),Empty slot ({0})

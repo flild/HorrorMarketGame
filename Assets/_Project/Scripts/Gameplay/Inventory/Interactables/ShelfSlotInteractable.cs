@@ -1,6 +1,7 @@
 ﻿using Assets._Project.Scripts.Gameplay.Interactables;
 using Assets._Project.Scripts.Gameplay.Inventory.Data;
 using Assets._Project.Scripts.Gameplay.Inventory.Interfaces;
+using Assets._Project.Scripts.Gameplay.Phone; // Добавили для PlayerActionSignal
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
@@ -17,41 +18,46 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
         [SerializeField] private Vector2Int _gridSize = new Vector2Int(2, 2);
         [SerializeField] private float _delayBetweenItems = 0.3f;
 
+        [Header("Quest Tracking")]
+        [Tooltip("ID действия, которое улетит в трекер квестов, когда коробка полностью опустеет")]
+        [SerializeField] private string _actionId = "unpack_box";
+
         [Header("Visuals")]
         [SerializeField] private GameObject _highlightVisual;
 
         private BoxCollider _collider;
         private CancellationTokenSource _unpackCts;
         private IEquipmentService _equipment;
+        private SignalBus _signalBus; // Добавили шину
         private bool _isUnpacking;
         private int _currentItemsPlaced = 0;
 
         private int MaxCapacity => _gridSize.x * _gridSize.y;
 
         [Inject]
-        public void Construct(IEquipmentService equipment)
+        public void Construct(IEquipmentService equipment, SignalBus signalBus)
         {
             _equipment = equipment;
+            _signalBus = signalBus;
         }
 
         private void Awake()
         {
             _collider = GetComponent<BoxCollider>();
-            AlignHighlightVisual(); // Жестко ставим на место при старте
+            AlignHighlightVisual();
             if (_highlightVisual != null) _highlightVisual.SetActive(false);
         }
 
         private void OnValidate()
         {
             if (_collider == null) _collider = GetComponent<BoxCollider>();
-            AlignHighlightVisual(); // Чтобы подсветка сама прыгала на дно прямо в редакторе
+            AlignHighlightVisual();
         }
 
         private void AlignHighlightVisual()
         {
             if (_highlightVisual == null || _collider == null) return;
 
-            // Считаем локальную позицию: центр по X и Z, и самое дно по Y
             Vector3 bottomLocalPos = new Vector3(
                 _collider.center.x,
                 _collider.center.y - (_collider.size.y / 2f),
@@ -73,7 +79,6 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
                 if (_currentItemsPlaced >= MaxCapacity)
                     return "Место заполнено";
 
-                // В руках коробка
                 if (_equipment.CurrentItem is BoxItemDefinition box)
                 {
                     if (box.ContentItem == _allowedProduct)
@@ -81,7 +86,6 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
                     return $"Сюда нужно: {_allowedProduct.DisplayName}";
                 }
 
-                // В руках одиночный товар
                 if (_equipment.CurrentItem == _allowedProduct)
                 {
                     return $"Положить {_allowedProduct.DisplayName} [E]";
@@ -95,7 +99,6 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
         {
             if (_isUnpacking || _currentItemsPlaced >= MaxCapacity) return;
 
-            // СЦЕНАРИЙ 1: Игрок держит коробку
             if (_equipment.CurrentItem is BoxItemDefinition boxDef &&
                 boxDef.ContentItem == _allowedProduct &&
                 _equipment.CurrentInstance != null)
@@ -107,7 +110,6 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
                     UnpackRoutine(boxDef, boxState, _unpackCts.Token).Forget();
                 }
             }
-            // СЦЕНАРИЙ 2: Игрок держит нужный товар в руках
             else if (_equipment.CurrentItem == _allowedProduct)
             {
                 PlaceSingleItem();
@@ -144,6 +146,20 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
 
                     SpawnProductModel(boxDef.ContentItem);
 
+                    // ПРОВЕРКА НА ОПУСТОШЕНИЕ КОРОБКИ
+                    if (boxState.CurrentItemsCount == 0)
+                    {
+                        Debug.Log($"[ShelfSlotInteractable] Коробка {boxDef.Id} пуста! Кидаем сигнал {_actionId}");
+                        _signalBus.Fire(new PlayerActionSignal
+                        {
+                            ActionId = _actionId,
+                            Amount = 1
+                        });
+
+                        // Коробка пустая, дальше крутить цикл смысла нет
+                        break;
+                    }
+
                     await UniTask.Delay(TimeSpan.FromSeconds(_delayBetweenItems), cancellationToken: token);
                 }
             }
@@ -172,7 +188,6 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
             _currentItemsPlaced++;
         }
 
-        // ================= МАТЕМАТИКА СЕТКИ =================
         private Vector3 GetPositionForIndex(int index)
         {
             if (_collider == null) _collider = GetComponent<BoxCollider>();
@@ -189,7 +204,6 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
             float startX = center.x - (size.x / 2f) + (stepX / 2f);
             float startZ = center.z - (size.z / 2f) + (stepZ / 2f);
 
-            // Вот здесь теперь просто берем центр коллайдера по высоте
             float centerY = center.y;
 
             Vector3 localPos = new Vector3(startX + (col * stepX), centerY, startZ + (row * stepZ));
