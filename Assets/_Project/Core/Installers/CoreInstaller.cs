@@ -1,3 +1,4 @@
+using Assets._Project.Core;
 using Assets._Project.Scripts.Gameplay.GameTime;
 using Assets._Project.Scripts.Gameplay.Inventory;
 using Assets._Project.Scripts.Gameplay.Phone;
@@ -9,68 +10,81 @@ using Zenject;
 
 public class CoreInstaller : MonoInstaller
 {
-    // Ссылка на префаб или объект игрока на сцене
-    //[SerializeField] private PlayerController playerInstance;
-
     public override void InstallBindings()
     {
-        // Базовое ядро
-        Container.Bind<PlayerView>().FromComponentInHierarchy().AsSingle();
-        Container.BindInterfacesTo<StandaloneInputService>().AsSingle();
-        Container.BindInterfacesTo<WindowService>().AsSingle();
-
-        // Инициализация шины сигналов
+        // 1. Шина сигналов всегда ставится первой
         SignalBusInstaller.Install(Container);
+        DeclareSignals();
 
-        // --- СИСТЕМА ИНВЕНТАРЯ И РУК ---
-        Container.BindInterfacesTo<InventoryService>().AsSingle();
-        Container.BindInterfacesTo<EquipmentService>().AsSingle();
-        Container.BindInterfacesTo<ShiftTimeService>().AsSingle();
+        // 2. Базовые и системные сервисы
+        BindCoreServices();
 
-        // Декларация сигналов инвентаря
+        // 3. Геймплейные механики и системы
+        BindGameplayServices();
+
+        // 4. Слой пользовательского интерфейса
+        BindUIServices();
+    }
+
+    private void DeclareSignals()
+    {
+        // --- Взаимодействие и Игрок ---
+        Container.DeclareSignal<InteractableFocusSignal>();
+        Container.DeclareSignal<PlayerActionSignal>();
+        Container.DeclareSignal<ReadNoteSignal>();
+
+        // --- Инвентарь и Инструменты ---
         Container.DeclareSignal<ItemAddedSignal>();
         Container.DeclareSignal<ItemRemovedSignal>();
         Container.DeclareSignal<EquipmentChangedSignal>();
         Container.DeclareSignal<ToolActionSignal>();
-        // --------------------------------
 
-        // UI Окна (Должны лежать на Canvas в GameplayCore)
+        // --- Система Времени ---
+        Container.DeclareSignal<TimeTickSignal>();
+        Container.DeclareSignal<ShiftPhaseChangedSignal>();
+
+        // --- Телефон и Квесты ---
+        Container.DeclareSignal<PhoneTasksUpdatedSignal>();
+        Container.DeclareSignal<PhoneMessageReceivedSignal>();
+
+        // --- Системные ---
+        Container.DeclareSignal<LanguageChangedSignal>();
+    }
+
+    private void BindCoreServices()
+    {
+        // View игрока персистентен на корневой сцене
+        Container.Bind<PlayerView>().FromComponentInHierarchy().AsSingle();
+
+        Container.BindInterfacesTo<StandaloneInputService>().AsSingle();
+        Container.BindInterfacesAndSelfTo<LevelManager>().AsSingle();
+        Container.BindInterfacesTo<LocalizationService>().AsSingle();
+        Container.BindInterfacesTo<WindowService>().AsSingle();
+    }
+
+    private void BindGameplayServices()
+    {
+        Container.BindInterfacesTo<ShiftTimeService>().AsSingle();
+        Container.BindInterfacesTo<InventoryService>().AsSingle();
+        Container.BindInterfacesTo<EquipmentService>().AsSingle();
+
+        Container.BindInterfacesTo<PhoneService>().AsSingle();
+        Container.BindInterfacesTo<QuestTracker>().AsSingle();
+
+        Container.BindInterfacesTo<QuestGenerator>().AsSingle();
+    }
+
+    private void BindUIServices()
+    {
+        // Окна (View - ищутся на Canvas)
         Container.Bind<HUDWindow>().FromComponentInHierarchy().AsSingle();
         Container.Bind<PauseWindow>().FromComponentInHierarchy().AsSingle();
         Container.Bind<SettingsWindow>().FromComponentInHierarchy().AsSingle();
         Container.Bind<PhoneWindow>().FromComponentInHierarchy().AsSingle();
 
-        // Презентеры и хендлеры
-        Container.BindInterfacesTo<PausePresenter>().AsSingle();
+        // Презентеры (Controller)
         Container.BindInterfacesAndSelfTo<HUDPresenter>().AsSingle();
-
-        // Старые сигналы
-        Container.DeclareSignal<InteractableFocusSignal>();
-        Container.DeclareSignal<ReadNoteSignal>();
-
-        // Менеджер уровней
-        Container.BindInterfacesAndSelfTo<LevelManager>().AsSingle();
-
-
-        //Time
-        Container.DeclareSignal<TimeTickSignal>();
-        Container.DeclareSignal<ShiftPhaseChangedSignal>();
-
-
-        // Сигналы телефона
-        Container.DeclareSignal<PhoneTasksUpdatedSignal>();
-        Container.DeclareSignal<PhoneMessageReceivedSignal>();
-
-        // Сервисы
-        Container.BindInterfacesTo<PhoneService>().AsSingle();
-
-        // Презентер телефона (Window уже есть в твоем коде)
+        Container.BindInterfacesTo<PausePresenter>().AsSingle();
         Container.BindInterfacesAndSelfTo<PhonePresenter>().AsSingle();
-
-        // Декларируем новый сигнал
-        Container.DeclareSignal<PlayerActionSignal>();
-
-        // Биндим QuestTracker (он IInitializable/IDisposable, так что используем Interfaces)
-        Container.BindInterfacesTo<QuestTracker>().AsSingle();
     }
 }

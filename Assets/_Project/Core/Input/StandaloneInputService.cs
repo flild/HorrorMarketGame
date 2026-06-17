@@ -57,9 +57,24 @@ namespace Project.Core.Input
         }
 
 
+
+        public string GetBindingName(string actionName)
+        {
+            // Ищем экшен по имени (например "Interact")
+            var action = _input.asset.FindAction(actionName);
+            if (action == null)
+            {
+                Debug.LogWarning($"[InputService] Не найден экшен с именем: {actionName}");
+                return "[?]";
+            }
+
+            // Берем отображаемое имя текущего бинда. 
+            // DontIncludeInteractions убирает лишний мусор вроде "Hold" или "Press" из названия
+            return $"[{action.GetBindingDisplayString(0, InputBinding.DisplayStringOptions.DontIncludeInteractions)}]";
+        }
+
         public void Enable() => _input.Player.Enable();
         public void Disable() => _input.Player.Disable();
-
 
         public void Dispose()
         {

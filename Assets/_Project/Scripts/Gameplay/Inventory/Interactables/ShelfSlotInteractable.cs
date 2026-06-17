@@ -3,6 +3,7 @@ using Assets._Project.Scripts.Gameplay.Inventory.Data;
 using Assets._Project.Scripts.Gameplay.Inventory.Interfaces;
 using Assets._Project.Scripts.Gameplay.Phone; // Добавили для PlayerActionSignal
 using Cysharp.Threading.Tasks;
+using Project.Core.Input;
 using System;
 using System.Threading;
 using UnityEngine;
@@ -34,11 +35,46 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
 
         private int MaxCapacity => _gridSize.x * _gridSize.y;
 
+        private IInputService _inputService;
+
         [Inject]
-        public void Construct(IEquipmentService equipment, SignalBus signalBus)
+        public void Construct(IEquipmentService equipment, SignalBus signalBus, IInputService inputService)
         {
             _equipment = equipment;
             _signalBus = signalBus;
+            _inputService = inputService;
+        }
+
+        public override PromptData InteractionPrompt // МЕНЯЕМ string НА PromptData
+        {
+            get
+            {
+                if (_currentItemsPlaced >= MaxCapacity)
+                    return new PromptData("ui_prompt_shelf_full"); // "Место заполнено"
+
+                if (_equipment.CurrentItem is BoxItemDefinition box)
+                {
+                    if (box.ContentItem == _allowedProduct)
+                    {
+                        string interactBind = _inputService.GetBindingName("Interact");
+                        // "Выложить {0} [{1}]"
+                        return new PromptData("ui_prompt_unpack", box.ContentItem.DisplayName, interactBind);
+                    }
+
+                    // "Сюда нужно: {0}"
+                    return new PromptData("ui_prompt_shelf_need", _allowedProduct.DisplayName);
+                }
+
+                if (_equipment.CurrentItem == _allowedProduct)
+                {
+                    string interactBind = _inputService.GetBindingName("Interact");
+                    // "Положить {0} [{1}]"
+                    return new PromptData("ui_prompt_shelf_place", _allowedProduct.DisplayName, interactBind);
+                }
+
+                // "Пустое место ({0})"
+                return new PromptData("ui_prompt_shelf_empty", _allowedProduct.DisplayName);
+            }
         }
 
         private void Awake()
@@ -70,29 +106,6 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
         protected override void EnableOutline(bool enable)
         {
             if (_highlightVisual != null) _highlightVisual.SetActive(enable);
-        }
-
-        public override string InteractionPrompt
-        {
-            get
-            {
-                if (_currentItemsPlaced >= MaxCapacity)
-                    return "Место заполнено";
-
-                if (_equipment.CurrentItem is BoxItemDefinition box)
-                {
-                    if (box.ContentItem == _allowedProduct)
-                        return $"Выложить {box.ContentItem.DisplayName} [Зажать E]";
-                    return $"Сюда нужно: {_allowedProduct.DisplayName}";
-                }
-
-                if (_equipment.CurrentItem == _allowedProduct)
-                {
-                    return $"Положить {_allowedProduct.DisplayName} [E]";
-                }
-
-                return $"Пустое место ({_allowedProduct.DisplayName})";
-            }
         }
 
         public override void Interact()

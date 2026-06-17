@@ -1,6 +1,7 @@
 ﻿using Assets._Project.Scripts.Gameplay.Inventory.Interfaces;
 using Assets._Project.Scripts.Gameplay.Phone;
 using Cysharp.Threading.Tasks;
+using Project.Core.Input;
 using System;
 using System.Threading;
 using UnityEngine;
@@ -22,6 +23,7 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
 
         private IEquipmentService _equipment;
         private SignalBus _signalBus;
+        private IInputService _inputService;
         private CancellationTokenSource _washCts;
 
         private bool _isWashing;
@@ -35,21 +37,25 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
         private static readonly int RandomSeedProp = Shader.PropertyToID("_RandomSeed");
 
         [Inject]
-        public void Construct(IEquipmentService equipment, SignalBus signalBus)
+        public void Construct(IEquipmentService equipment, SignalBus signalBus, IInputService inputService)
         {
             _equipment = equipment;
             _signalBus = signalBus;
+            _inputService = inputService;
         }
 
-        public override string InteractionPrompt
+        public override PromptData InteractionPrompt
         {
             get
             {
-                // Проверяем capability через интерфейс
                 if (_equipment.CurrentItem is ICleaningTool)
-                    return "Отмыть пятно [Зажать E]";
+                {
+                    // Теперь InputService доступен
+                    string interactBind = _inputService.GetBindingName("Interact");
+                    return new PromptData("ui_prompt_wash", interactBind);
+                }
 
-                return "Грязное пятно (Нужен инструмент для уборки)";
+                return new PromptData("ui_prompt_wash_need_tool");
             }
         }
 

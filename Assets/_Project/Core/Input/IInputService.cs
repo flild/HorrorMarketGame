@@ -18,5 +18,6 @@ namespace Project.Core.Input
         event Action OnInteractCanceled; 
         void Enable();
         void Disable();
+        string GetBindingName(string actionName);
     }
 }

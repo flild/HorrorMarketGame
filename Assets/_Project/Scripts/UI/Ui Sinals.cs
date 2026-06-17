@@ -3,7 +3,7 @@ using UnityEngine;
 public struct InteractableFocusSignal
 {
     public bool IsFocused;
-    public string PromptText;
+    public IInteractable FocusedObject;
 }
 
 // Задел на будущее для записок

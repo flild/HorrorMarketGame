@@ -1,9 +1,10 @@
+using Assets._Project.Scripts.Gameplay.Inventory.Interfaces;
 using UnityEngine;
 
 public interface IInteractable
 {
 
-    string InteractionPrompt { get; }
+    PromptData InteractionPrompt { get; }
 
     // Вызывается, когда игрок навел прицел
     void OnFocus();

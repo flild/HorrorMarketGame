@@ -1,3 +1,5 @@
+using Assets._Project.Core;
+using Assets._Project.Scripts.Gameplay.Inventory.Interfaces; // Путь к твоему интерфейсу
 using System;
 using UnityEngine;
 using Zenject;
@@ -6,31 +8,37 @@ public class HUDPresenter : IInitializable, IDisposable
 {
     private readonly SignalBus _signalBus;
     private readonly HUDWindow _hudWindow;
+    private readonly ILocalizationService _localization;
 
-    // Внедряем зависимости. Zenject сам передаст сюда SignalBus и наш HUDWindow со сцены
-    public HUDPresenter(SignalBus signalBus, HUDWindow hudWindow)
+    // Внедряем сервис локализации
+    public HUDPresenter(SignalBus signalBus, HUDWindow hudWindow, ILocalizationService localization)
     {
         _signalBus = signalBus;
         _hudWindow = hudWindow;
+        _localization = localization;
     }
 
     public void Initialize()
     {
-        // Подписываемся на сигнал от луча из глаз
         _signalBus.Subscribe<InteractableFocusSignal>(OnInteractableFocus);
     }
 
     public void Dispose()
     {
-        // Отписываемся, чтобы не было утечек памяти
         _signalBus.Unsubscribe<InteractableFocusSignal>(OnInteractableFocus);
     }
 
     private void OnInteractableFocus(InteractableFocusSignal signal)
     {
-        if (signal.IsFocused)
+        if (signal.IsFocused && signal.FocusedObject != null)
         {
-            _hudWindow.ShowInteractionPrompt(signal.PromptText);
+            // Берем ключ и параметры из объекта
+            PromptData prompt = signal.FocusedObject.InteractionPrompt;
+
+            // Превращаем ключ в переведенный текст
+            string localizedText = _localization.GetText(prompt.Key, prompt.Args);
+
+            _hudWindow.ShowInteractionPrompt(localizedText);
         }
         else
         {
