@@ -2,20 +2,22 @@ using UnityEngine;
 
 namespace Assets._Project.Scripts.Gameplay.Tasks.Data
 {
-    [CreateAssetMenu(fileName = "Task_New", menuName = "Project/Tasks/Task Definition")]
+    [CreateAssetMenu(fileName = "Task_New", menuName = "NightShift/Tasks/Task Definition")]
     public class TaskDefinition : ScriptableObject
     {
         [field: SerializeField] public string Id { get; private set; }
 
-        [field: Header("UI & Phone")]
-        [field: SerializeField] public string DisplayName { get; private set; }
-        [field: SerializeField, TextArea(2, 4)] public string PhoneDescription { get; private set; }
+        [field: Header("Localization Keys")]
+        [Tooltip("Ключ для названия квеста (напр: task_wash_name)")]
+        [field: SerializeField] public string DisplayNameKey { get; private set; }
+
+        [Tooltip("Ключ для описания (напр: task_wash_desc)")]
+        [field: SerializeField] public string PhoneDescriptionKey { get; private set; }
 
         [field: Header("Tracking")]
-        [Tooltip("ID действия, которое должен выполнить игрок (например: 'wash_stain', 'unpack_box')")]
+        [Tooltip("ID действия из интерактива (например: 'wash_stain')")]
         [field: SerializeField] public string TargetActionId { get; private set; }
 
-        [Tooltip("Сколько раз нужно выполнить действие для закрытия задачи")]
         [field: SerializeField, Range(1, 20)] public int RequiredAmount { get; private set; } = 1;
 
         [field: Header("Progression")]

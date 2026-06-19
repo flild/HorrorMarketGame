@@ -43,6 +43,27 @@ public class WindowService : IWindowService, IInitializable, IDisposable
         }
     }
 
+    public void ToggleWindow<T>() where T : WindowBase
+    {
+        var window = _container.TryResolve<T>();
+
+        if (window == null)
+        {
+            Debug.LogError($"[WindowService] Окно {typeof(T).Name} не забинжено!");
+            return;
+        }
+
+        // Если окно сейчас самое верхнее в стеке — закрываем его
+        if (_windowStack.Count > 0 && _windowStack.Peek() == window)
+        {
+            CloseTopWindow();
+        }
+        // Если окна вообще нет в стеке — открываем
+        else if (!_windowStack.Contains(window))
+        {
+            OpenWindow<T>();
+        }
+    }
     public void OpenWindow<T>() where T : WindowBase
     {
         var window = _container.TryResolve<T>();

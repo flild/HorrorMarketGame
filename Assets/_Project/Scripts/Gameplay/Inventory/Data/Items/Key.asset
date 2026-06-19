@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Key
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Scripts.Gameplay.Inventory.Data.ToolItemDefinition
   <Id>k__BackingField: key
-  <DisplayName>k__BackingField: "\u041A\u043B\u044E\u0447"
+  <DisplayNameKey>k__BackingField: ui_prompt_wash
   <Type>k__BackingField: 0
-  <ViewPrefab>k__BackingField: {fileID: 5239918967903209503, guid: 51b7193f824f8cc47bd9e901281fa78c, type: 3}
-  <WorldPrefab>k__BackingField: {fileID: 5239918967903209503, guid: 51b7193f824f8cc47bd9e901281fa78c, type: 3}
+  <ViewPrefab>k__BackingField: {fileID: 4204849679975778846, guid: 80a43682d4842354eb21e184c17126f8, type: 3}
+  <WorldPrefab>k__BackingField: {fileID: 4204849679975778846, guid: 80a43682d4842354eb21e184c17126f8, type: 3}

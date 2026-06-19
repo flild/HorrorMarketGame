@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Appels
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Scripts.Gameplay.Inventory.Data.ProductItemDefinition
   <Id>k__BackingField: apple
-  <DisplayName>k__BackingField: "\u0413\u0440\u0443\u0448\u0430"
+  <DisplayNameKey>k__BackingField: ui_prompt_wash
   <Type>k__BackingField: 0
   <ShelfPrefab>k__BackingField: {fileID: 675798770228987265, guid: 5a556e9a3efc9714c9e5735760f678da, type: 3}

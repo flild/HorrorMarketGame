@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Box
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Scripts.Gameplay.Inventory.Data.BoxItemDefinition
   <Id>k__BackingField: Box with apple
-  <DisplayName>k__BackingField: "\u043A\u043E\u0440\u043E\u0431\u043A\u0430 \u0441
-    \u044F\u0431\u043B\u043E\u043A\u0430\u043C\u0438"
+  <DisplayNameKey>k__BackingField: ui_prompt_wash
   <Type>k__BackingField: 2
   <ContentItem>k__BackingField: {fileID: 11400000, guid: 1044983c9e5563a408aae9ba843d5444, type: 2}
   <MaxCapacity>k__BackingField: 10

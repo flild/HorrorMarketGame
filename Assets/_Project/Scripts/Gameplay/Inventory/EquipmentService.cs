@@ -27,7 +27,7 @@ namespace Assets._Project.Scripts.Gameplay.Inventory
             // Теперь мы ЖЕСТКО требуем, чтобы при поднятии предмета передавался инстанс со сцены
             if (worldObject == null)
             {
-                Debug.LogError($"[Equipment] Попытка взять предмет '{item.DisplayName}' без указания физического объекта со сцены!");
+                Debug.LogError($"[Equipment] Попытка взять предмет '{item.DisplayNameKey}' без указания физического объекта со сцены!");
                 return;
             }
 
@@ -42,7 +42,7 @@ namespace Assets._Project.Scripts.Gameplay.Inventory
             // Вырубаем физику (через наш новый ItemPhysicsController)
             TogglePhysics(CurrentInstance, false);
 
-            Debug.Log($"[Equipment] Взяли в руки: {item.DisplayName}");
+            Debug.Log($"[Equipment] Взяли в руки: {item.DisplayNameKey}");
 
             _signalBus.Fire(new EquipmentChangedSignal
             {
@@ -55,7 +55,7 @@ namespace Assets._Project.Scripts.Gameplay.Inventory
         {
             if (!IsHandsBusy) return;
 
-            Debug.Log($"[Equipment] Освободили руки от: {CurrentItem.DisplayName}");
+            Debug.Log($"[Equipment] Освободили руки от: {CurrentItem.DisplayNameKey}");
 
             // Запоминаем объект, так как сейчас мы обнулим ссылки
             var instanceToDrop = CurrentInstance;

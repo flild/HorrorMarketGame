@@ -15,7 +15,8 @@ namespace Project.Core.Input
         event Action OnPauseTriggered;
         event Action OnDropTriggered;
         event Action OnInteractStarted; 
-        event Action OnInteractCanceled; 
+        event Action OnInteractCanceled;
+        event Action OnPhoneToggled;
         void Enable();
         void Disable();
         string GetBindingName(string actionName);

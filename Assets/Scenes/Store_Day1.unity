@@ -1679,39 +1679,39 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6262003927076846597, guid: 98099a1f2a9ecab469ee68f69456073e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.52607
+      value: -3.473
       objectReference: {fileID: 0}
     - target: {fileID: 6262003927076846597, guid: 98099a1f2a9ecab469ee68f69456073e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.539
+      value: 0.825
       objectReference: {fileID: 0}
     - target: {fileID: 6262003927076846597, guid: 98099a1f2a9ecab469ee68f69456073e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.251
+      value: 3.131
       objectReference: {fileID: 0}
     - target: {fileID: 6262003927076846597, guid: 98099a1f2a9ecab469ee68f69456073e, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.42523336
       objectReference: {fileID: 0}
     - target: {fileID: 6262003927076846597, guid: 98099a1f2a9ecab469ee68f69456073e, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: 0.12583873
       objectReference: {fileID: 0}
     - target: {fileID: 6262003927076846597, guid: 98099a1f2a9ecab469ee68f69456073e, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.85945004
       objectReference: {fileID: 0}
     - target: {fileID: 6262003927076846597, guid: 98099a1f2a9ecab469ee68f69456073e, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0.25433588
       objectReference: {fileID: 0}
     - target: {fileID: 6262003927076846597, guid: 98099a1f2a9ecab469ee68f69456073e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: 32.97
       objectReference: {fileID: 0}
     - target: {fileID: 6262003927076846597, guid: 98099a1f2a9ecab469ee68f69456073e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 127.35
       objectReference: {fileID: 0}
     - target: {fileID: 6262003927076846597, guid: 98099a1f2a9ecab469ee68f69456073e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -4118,11 +4118,11 @@ MonoBehaviour:
   OnInteractEvent:
     m_PersistentCalls:
       m_Calls: []
-  _promptText: "\u0412\u0437\u0430\u0438\u043C\u043E\u0434\u0435\u0439\u0441\u0442\u0432\u043E\u0432\u0430\u0442\u044C
-    [E]"
+  _promptKey: ui_prompt_interact
   _allowedProduct: {fileID: 11400000, guid: 1044983c9e5563a408aae9ba843d5444, type: 2}
   _gridSize: {x: 2, y: 4}
   _delayBetweenItems: 0.1
+  _actionId: unpack_box
   _highlightVisual: {fileID: 1804446985}
 --- !u!65 &419348864
 BoxCollider:
@@ -4232,8 +4232,7 @@ MonoBehaviour:
   OnInteractEvent:
     m_PersistentCalls:
       m_Calls: []
-  _promptText: "\u0412\u0437\u0430\u0438\u043C\u043E\u0434\u0435\u0439\u0441\u0442\u0432\u043E\u0432\u0430\u0442\u044C
-    [E]"
+  _promptKey: ui_prompt_interact
 --- !u!65 &429679998
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9465,11 +9464,11 @@ MonoBehaviour:
   OnInteractEvent:
     m_PersistentCalls:
       m_Calls: []
-  _promptText: "\u0412\u0437\u0430\u0438\u043C\u043E\u0434\u0435\u0439\u0441\u0442\u0432\u043E\u0432\u0430\u0442\u044C
-    [E]"
+  _promptKey: ui_prompt_interact
   _allowedProduct: {fileID: 11400000, guid: 1044983c9e5563a408aae9ba843d5444, type: 2}
   _gridSize: {x: 2, y: 4}
   _delayBetweenItems: 0.1
+  _actionId: unpack_box
   _highlightVisual: {fileID: 1673004839}
 --- !u!65 &687963466
 BoxCollider:
@@ -9637,8 +9636,7 @@ MonoBehaviour:
   OnInteractEvent:
     m_PersistentCalls:
       m_Calls: []
-  _promptText: "\u0412\u0437\u0430\u0438\u043C\u043E\u0434\u0435\u0439\u0441\u0442\u0432\u043E\u0432\u0430\u0442\u044C
-    [E]"
+  _promptKey: ui_prompt_interact
 --- !u!136 &748261873
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -11715,8 +11713,7 @@ MonoBehaviour:
   OnInteractEvent:
     m_PersistentCalls:
       m_Calls: []
-  _promptText: "\u0412\u0437\u0430\u0438\u043C\u043E\u0434\u0435\u0439\u0441\u0442\u0432\u043E\u0432\u0430\u0442\u044C
-    [E]"
+  _promptKey: ui_prompt_interact
 --- !u!65 &1007778117
 BoxCollider:
   m_ObjectHideFlags: 0

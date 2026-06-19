@@ -22,6 +22,7 @@ namespace Project.Core.Input
         public event Action OnDropTriggered;
         public event Action OnInteractStarted;
         public event Action OnInteractCanceled;
+        public event Action OnPhoneToggled;
 
 
         public StandaloneInputService()
@@ -32,6 +33,9 @@ namespace Project.Core.Input
             _input.Player.Drop.performed += _ => OnDropTriggered?.Invoke();
             _input.Player.Interact.started += _ => OnInteractStarted?.Invoke();
             _input.Player.Interact.canceled += _ => OnInteractCanceled?.Invoke();
+
+            _input.Player.TogglePhone.performed += HandlePhoneInput;
+            _input.UI.TogglePhone.performed += HandlePhoneInput;
 
             Enable();
         }
@@ -56,7 +60,10 @@ namespace Project.Core.Input
             OnPauseTriggered?.Invoke();
         }
 
-
+        private void HandlePhoneInput(InputAction.CallbackContext context)
+        {
+            OnPhoneToggled?.Invoke();
+        }
 
         public string GetBindingName(string actionName)
         {
@@ -84,6 +91,9 @@ namespace Project.Core.Input
 
             _input.Player.Interact.started -= _ => OnInteractStarted?.Invoke();
             _input.Player.Interact.canceled -= _ => OnInteractCanceled?.Invoke();
+
+            _input.Player.TogglePhone.performed -= HandlePhoneInput;
+            _input.UI.TogglePhone.performed -= HandlePhoneInput;
 
             Disable();
             _input.Dispose();

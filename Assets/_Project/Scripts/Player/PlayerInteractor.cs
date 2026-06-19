@@ -1,6 +1,7 @@
 using Project.Core.Input;
 using UnityEngine;
 using Zenject;
+using Assets._Project.Scripts.Gameplay.Inventory.Interfaces; // Добавили для IInteractable
 
 public class PlayerInteractor : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class PlayerInteractor : MonoBehaviour
 
     private IInputService _input;
     private IInteractable _currentInteractable; // То, на что мы смотрим
-    private IInteractable _interactingObject;// То, что мы сейчас "зажали/держим"
+    private IInteractable _interactingObject;   // То, что мы сейчас "зажали/держим"
 
     [Inject]
     public void Construct(IInputService input, SignalBus signalBus)
@@ -40,7 +41,13 @@ public class PlayerInteractor : MonoBehaviour
                     ClearFocus();
                     _currentInteractable = interactable;
                     _currentInteractable.OnFocus();
-                    _signalBus.Fire(new InteractableFocusSignal { IsFocused = true, PromptText = _currentInteractable.InteractionPrompt });
+
+                    // КИДАЕМ В ШИНУ ССЫЛКУ НА ОБЪЕКТ, А НЕ ТЕКСТ
+                    _signalBus.Fire(new InteractableFocusSignal
+                    {
+                        IsFocused = true,
+                        FocusedObject = _currentInteractable
+                    });
                 }
                 return;
             }
@@ -48,7 +55,6 @@ public class PlayerInteractor : MonoBehaviour
 
         ClearFocus();
     }
-
 
     private void HandleInteractStart()
     {
@@ -72,6 +78,7 @@ public class PlayerInteractor : MonoBehaviour
             _interactingObject = null;
         }
     }
+
     private void ClearFocus()
     {
         if (_currentInteractable != null)
@@ -93,9 +100,14 @@ public class PlayerInteractor : MonoBehaviour
             _currentInteractable = null;
 
             // Теперь код гарантированно доходит сюда, и плашка UI пропадает
-            _signalBus.Fire(new InteractableFocusSignal { IsFocused = false });
+            _signalBus.Fire(new InteractableFocusSignal
+            {
+                IsFocused = false,
+                FocusedObject = null
+            });
         }
     }
+
     private void OnDestroy()
     {
         if (_input != null)
@@ -110,5 +122,4 @@ public class PlayerInteractor : MonoBehaviour
         // В апдейте остается ТОЛЬКО рейкаст
         HandleRaycast();
     }
-
 }

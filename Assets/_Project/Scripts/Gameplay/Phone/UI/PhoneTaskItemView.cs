@@ -8,12 +8,30 @@ namespace Assets._Project.Scripts.Gameplay.Phone.UI
 {
     public class PhoneTaskItemView : MonoBehaviour
     {
-        [SerializeField] private TMP_Text _taskText;
+        [SerializeField] private TextMeshProUGUI _titleText;
+        [SerializeField] private TextMeshProUGUI _descText;
 
-        public void Setup(PhoneTaskData data)
+        [Header("Colors")]
+        [SerializeField] private Color _activeColor = Color.white;
+        [SerializeField] private Color _completedColor = new Color(0.5f, 0.5f, 0.5f, 1f); // Серый для выполненных
+
+        public void Setup(string title, string description, bool isCompleted)
         {
-            string statusIcon = data.State == NightTaskState.Completed ? "<color=green>✓" : "<color=yellow>○";
-            _taskText.text = $"{statusIcon} {data.Definition.DisplayName}</color>\n<size=80%>{data.Definition.PhoneDescription}</size>";
+            _titleText.text = title;
+            _descText.text = description;
+
+            _titleText.color = isCompleted ? _completedColor : _activeColor;
+            _descText.color = isCompleted ? _completedColor : _activeColor;
+
+            // Если хочешь зачеркивать текст у выполненных:
+            if (isCompleted)
+            {
+                _titleText.fontStyle = FontStyles.Strikethrough;
+            }
+            else
+            {
+                _titleText.fontStyle = FontStyles.Normal;
+            }
         }
     }
 }

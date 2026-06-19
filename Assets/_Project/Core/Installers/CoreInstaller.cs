@@ -68,9 +68,10 @@ public class CoreInstaller : MonoInstaller
         Container.BindInterfacesTo<InventoryService>().AsSingle();
         Container.BindInterfacesTo<EquipmentService>().AsSingle();
 
+        Container.BindInterfacesTo<PhoneInputHandler>().AsSingle();
         Container.BindInterfacesTo<PhoneService>().AsSingle();
-        Container.BindInterfacesTo<QuestTracker>().AsSingle();
 
+        Container.BindInterfacesTo<QuestTracker>().AsSingle();
         Container.BindInterfacesTo<QuestGenerator>().AsSingle();
     }
 

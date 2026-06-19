@@ -17,7 +17,7 @@ public class PlayerView : MonoBehaviour
     private IInputService _input;
     private float _verticalVelocity;
     private float _xRotation = 0f;
-
+     
     [Inject]
     public void Construct(IInputService input)
     {

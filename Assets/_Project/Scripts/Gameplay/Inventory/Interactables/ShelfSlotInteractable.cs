@@ -58,22 +58,22 @@ namespace Assets._Project.Scripts.Gameplay.Inventory.Interactables
                     {
                         string interactBind = _inputService.GetBindingName("Interact");
                         // "Выложить {0} [{1}]"
-                        return new PromptData("ui_prompt_unpack", box.ContentItem.DisplayName, interactBind);
+                        return new PromptData("ui_prompt_unpack", box.ContentItem.DisplayNameKey, interactBind);
                     }
 
                     // "Сюда нужно: {0}"
-                    return new PromptData("ui_prompt_shelf_need", _allowedProduct.DisplayName);
+                    return new PromptData("ui_prompt_shelf_need", _allowedProduct.DisplayNameKey);
                 }
 
                 if (_equipment.CurrentItem == _allowedProduct)
                 {
                     string interactBind = _inputService.GetBindingName("Interact");
                     // "Положить {0} [{1}]"
-                    return new PromptData("ui_prompt_shelf_place", _allowedProduct.DisplayName, interactBind);
+                    return new PromptData("ui_prompt_shelf_place", _allowedProduct.DisplayNameKey, interactBind);
                 }
 
                 // "Пустое место ({0})"
-                return new PromptData("ui_prompt_shelf_empty", _allowedProduct.DisplayName);
+                return new PromptData("ui_prompt_shelf_empty", _allowedProduct.DisplayNameKey);
             }
         }
 

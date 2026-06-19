@@ -1,4 +1,5 @@
 ﻿using Assets._Project.Scripts.Gameplay.Inventory.Interfaces;
+using Project.Core.Input;
 using UnityEngine;
 using Zenject;
 
@@ -11,15 +12,24 @@ namespace Assets._Project.Scripts.Gameplay.Inventory
         [SerializeField] private int _amount = 1;
 
         private IInventoryService _inventory;
+        private IInputService _inputService; // Добавили
 
         [Inject]
-        public void Construct(IInventoryService inventory)
+        public void Construct(IInventoryService inventory, IInputService inputService)
         {
             _inventory = inventory;
+            _inputService = inputService;
         }
 
-        // Динамически формируем текст на основе данных из SO
-        public override string InteractionPrompt => $"Взять {_itemData.DisplayName} [E]";
+        // Аналогично
+        public override PromptData InteractionPrompt
+        {
+            get
+            {
+                string interactBind = _inputService.GetBindingName("Interact");
+                return new PromptData("ui_prompt_take", _itemData.DisplayNameKey, interactBind);
+            }
+        }
 
         public override void Interact()
         {

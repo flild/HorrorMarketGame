@@ -8,7 +8,7 @@ public abstract class ItemDefinition : ScriptableObject
     public string Id { get; private set; }
 
     [field: SerializeField, Tooltip("Название для UI")]
-    public string DisplayName { get; private set; }
+    public string DisplayNameKey { get; private set; }
 
     [field: SerializeField]
     public ItemType Type { get; private set; }

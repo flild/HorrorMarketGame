@@ -37,7 +37,7 @@ namespace Assets._Project.Scripts.Player
 
         private void HandleDrop()
         {
-            Debug.Log($"drop item from hands {_equipment.CurrentItem?.DisplayName ?? "null"}"); 
+            Debug.Log($"drop item from hands {_equipment.CurrentItem?.DisplayNameKey ?? "null"}"); 
             if (_equipment.IsHandsBusy)
             {
                 _equipment.Unequip();
