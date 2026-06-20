@@ -19,4 +19,9 @@ namespace Assets._Project.Scripts.Gameplay.GameTime
     {
         public ShiftPhase NewPhase;
     }
+
+    public struct ShiftStartRequestedSignal { }
+    public struct ShiftEndRequestedSignal
+    {
+    }
 }

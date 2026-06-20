@@ -42,6 +42,8 @@ public class CoreInstaller : MonoInstaller
         // --- Система Времени ---
         Container.DeclareSignal<TimeTickSignal>();
         Container.DeclareSignal<ShiftPhaseChangedSignal>();
+        Container.DeclareSignal<ShiftStartRequestedSignal>();
+        Container.DeclareSignal<ShiftEndRequestedSignal>();
 
         // --- Телефон и Квесты ---
         Container.DeclareSignal<PhoneTasksUpdatedSignal>();
