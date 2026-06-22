@@ -53,9 +53,9 @@ namespace Assets._Project.Scripts.Gameplay.Tasks
             }
         }
 
-        private void CompleteTask(PhoneTaskData task)
+        private void CompleteTask(PhoneTaskData task) 
         {
-            Debug.Log($"[QuestTracker] Задача выполнена: {task.Definition.DisplayName}");
+            Debug.Log($"[QuestTracker] Задача выполнена: {task.Definition.DisplayNameKey}");
 
             _phoneService.SetTaskState(task.Definition.Id, NightTaskState.Completed);
 
